@@ -10,8 +10,6 @@ import CryptoKit
 
 class Cipher {
     init() {
-        loginGoogle()
-        
         let key = SymmetricKey(size: .bits128)
         let bufferSize = 1000000 // 1MB
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)

@@ -8,5 +8,9 @@ target 'datachest-ios' do
   # Pods for datachest-ios
   pod 'SwiftySSS'
   pod 'CryptoSwift', '~> 1.4.1'
-
+  pod 'GoogleSignIn'
+  # TODO FIREBASE MOZNO UZ NEBUDE POTREBNY?
+  pod 'Firebase/Auth'
+  pod 'MSAL'
+  pod 'SwiftyDropbox'
 end
