@@ -21,15 +21,9 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>msauth.petercurikjr.datachest-ios</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
+				<string>db-l53u25g8913p5mg</string>
 				<string>com.googleusercontent.apps.236269860524-943lpvph7n137fsd6kiq7fp94009gt4n</string>
+				<string>msauth.petercurikjr.datachest-ios</string>
 			</array>
 		</dict>
 	</array>
@@ -37,8 +31,10 @@
 	<string>1</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>msauthv2</string>
-		<string>msauthv3</string>
+		<string>dbapi-2</string>
+		<string>dbapi-8-emm</string>
+        <string>msauthv2</string>
+        <string>msauthv3</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

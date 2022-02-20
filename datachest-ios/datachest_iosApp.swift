@@ -10,12 +10,15 @@ import Firebase
 
 @main
 struct datachest_iosApp: App {
+    @UIApplicationDelegateAdaptor(DatachestAppDelegate.self) var datachestAppDelegate
+    
     @StateObject var googleAuthService = GoogleAuthService()
     @StateObject var microsoftAuthService = MicrosoftAuthService()
     @StateObject var dropboxAuthService = DropboxAuthService()
     
     var test = Cipher()
     
+    //OTAZKA CI BUDEME VOBEC POUZIVAT FIREBASE??
     init() {
         FirebaseApp.configure()
     }

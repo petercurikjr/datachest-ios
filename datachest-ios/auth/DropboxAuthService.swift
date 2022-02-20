@@ -9,12 +9,23 @@ import Foundation
 import SwiftyDropbox
 
 class DropboxAuthService: ObservableObject {
-    func signInDropbox() {
     
+    init() {
+        DropboxClientsManager.setupWithAppKey("l53u25g8913p5mg")
+    }
+    
+    func signInDropbox() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+        guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
+
+        let scopeRequest = ScopeRequest(scopeType: .user, scopes: ["account_info.read files.content.read files.content.write files.metadata.read"], includeGrantedScopes: false)
+        DropboxClientsManager.authorizeFromControllerV2(UIApplication.shared, controller: rootViewController, loadingStatusDelegate: nil, openURL: { _ in }, scopeRequest: scopeRequest)
     }
     
     func signOutDropbox() {
-        
+        let db = DropboxOAuthManager(appKey: "l53u25g8913p5mg")
+        print((db.getFirstAccessToken()?.accessToken) ?? "no access token")
+        DropboxClientsManager.unlinkClients()
     }
 }
 

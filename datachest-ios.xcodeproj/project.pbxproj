@@ -18,6 +18,8 @@
 		BC8841B02750520300E6E1E2 /* test-shamir.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841AF2750520300E6E1E2 /* test-shamir.txt */; };
 		BC8841B3275059D500E6E1E2 /* test-AES copy.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841B2275059D500E6E1E2 /* test-AES copy.txt */; };
 		BCA7B5B627C033DF00C119E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */; };
+		BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */; };
+		BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */; };
 		BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */; };
 		BCBC57F727BC06410094EC20 /* FileUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBC57F627BC06410094EC20 /* FileUploadService.swift */; };
 		BCBC57FC27BC07A70094EC20 /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBC57FB27BC07A70094EC20 /* Endpoints.swift */; };
@@ -39,6 +41,8 @@
 		BC8841AF2750520300E6E1E2 /* test-shamir.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-shamir.txt"; sourceTree = "<group>"; };
 		BC8841B2275059D500E6E1E2 /* test-AES copy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-AES copy.txt"; sourceTree = "<group>"; };
 		BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestAppDelegate.swift; sourceTree = "<group>"; };
+		BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestSceneDelegate.swift; sourceTree = "<group>"; };
 		BCBB66D427C17E27006DC95A /* datachest-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "datachest-ios.entitlements"; sourceTree = "<group>"; };
 		BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxAuthService.swift; sourceTree = "<group>"; };
 		BCBC57F627BC06410094EC20 /* FileUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadService.swift; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 				BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */,
 				BC884192274FF44D00E6E1E2 /* Info.plist */,
 				BC88418F274FF44D00E6E1E2 /* Preview Content */,
+				BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */,
+				BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */,
 			);
 			path = "datachest-ios";
 			sourceTree = "<group>";
@@ -290,9 +296,11 @@
 				BCBC57F727BC06410094EC20 /* FileUploadService.swift in Sources */,
 				BC8841A2274FF57C00E6E1E2 /* ShamirSecretSharing.swift in Sources */,
 				BC8841A6274FF5AC00E6E1E2 /* Cipher.swift in Sources */,
+				BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */,
 				BCBC57FC27BC07A70094EC20 /* Endpoints.swift in Sources */,
 				BC88418A274FF44C00E6E1E2 /* datachest_iosApp.swift in Sources */,
 				BCFBCA0D27C10929000DF554 /* MicrosoftAuthService.swift in Sources */,
+				BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */,
 				BCBC580027BC101B0094EC20 /* GoogleAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
