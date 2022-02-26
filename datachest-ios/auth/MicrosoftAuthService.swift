@@ -5,9 +5,8 @@
 //  Created by Peter Čuřík Jr. on 19/02/2022.
 //
 
-import Foundation
-import MSAL
 import SwiftUI
+import MSAL
 
 class MicrosoftAuthService: ObservableObject {
     var authority: MSALB2CAuthority?
@@ -34,22 +33,9 @@ class MicrosoftAuthService: ObservableObject {
         let interactiveParameters = MSALInteractiveTokenParameters(scopes: ["User.Read", "Files.ReadWrite"], webviewParameters: webViewParameters)
         
         application?.acquireToken(with: interactiveParameters) { result, error in
-            print((result?.accessToken) ?? "no token")
+            print("MICROSOFT signed in.", (result?.accessToken) ?? "no token")
             self.signedInAccount = result?.account
         }
-        
-//        provider = OAuthProvider(providerID: "microsoft.com")
-//
-//        provider?.getCredentialWith(nil) { credential, error in
-//            if let error = error {
-//                print(error)
-//            }
-//            if credential != nil {
-//                Auth.auth().signIn(with: credential!) { authResult, error in
-//                    print(authResult)
-//                }
-//            }
-//        }
     }
     
     func signOutMicrosoft() {
@@ -66,7 +52,7 @@ class MicrosoftAuthService: ObservableObject {
                 return
             }
             
-            print("signed out from Microsoft")
+            print("MICROSOFT signed out.")
         }
     }
 }

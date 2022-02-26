@@ -9,8 +9,7 @@ target 'datachest-ios' do
   pod 'SwiftySSS'
   pod 'CryptoSwift', '~> 1.4.1'
   pod 'GoogleSignIn'
-  # TODO FIREBASE MOZNO UZ NEBUDE POTREBNY?
-  pod 'Firebase/Auth'
+  pod 'GoogleAPIClientForREST/Drive'
   pod 'MSAL'
   pod 'SwiftyDropbox'
 end

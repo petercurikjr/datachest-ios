@@ -5,7 +5,6 @@
 //  Created by Peter Čuřík Jr. on 20/02/2022.
 //
 
-import Foundation
 import SwiftyDropbox
 
 class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
@@ -14,8 +13,7 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
             if let authResult = $0 {
                 switch authResult {
                   case .success(let accessToken):
-                    print(accessToken.accessToken)
-                    print("Success! User is logged into DropboxClientsManager.")
+                    print("DROPBOX signed in.", accessToken.accessToken)
                   case .cancel:
                       print("Authorization flow was manually canceled by user!")
                   case .error(_, let description):

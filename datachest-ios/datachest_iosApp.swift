@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-import Firebase
 
 @main
 struct datachest_iosApp: App {
+    // attach the UIKit's AppDelegate to the SwiftUI main application
     @UIApplicationDelegateAdaptor(DatachestAppDelegate.self) var datachestAppDelegate
     
     @StateObject var googleAuthService = GoogleAuthService()
@@ -17,11 +17,6 @@ struct datachest_iosApp: App {
     @StateObject var dropboxAuthService = DropboxAuthService()
     
     var test = Cipher()
-    
-    //OTAZKA CI BUDEME VOBEC POUZIVAT FIREBASE??
-    init() {
-        FirebaseApp.configure()
-    }
     
     var body: some Scene {
         WindowGroup {

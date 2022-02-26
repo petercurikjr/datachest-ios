@@ -17,7 +17,7 @@
 		BC8841AD27504E2500E6E1E2 /* test-AES.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841AC27504E2500E6E1E2 /* test-AES.txt */; };
 		BC8841B02750520300E6E1E2 /* test-shamir.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841AF2750520300E6E1E2 /* test-shamir.txt */; };
 		BC8841B3275059D500E6E1E2 /* test-AES copy.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841B2275059D500E6E1E2 /* test-AES copy.txt */; };
-		BCA7B5B627C033DF00C119E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */; };
+		BCA5182127CA854100D98A49 /* GoogleDriveApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */; };
 		BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */; };
 		BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */; };
 		BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */; };
@@ -40,7 +40,7 @@
 		BC8841AC27504E2500E6E1E2 /* test-AES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-AES.txt"; sourceTree = "<group>"; };
 		BC8841AF2750520300E6E1E2 /* test-shamir.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-shamir.txt"; sourceTree = "<group>"; };
 		BC8841B2275059D500E6E1E2 /* test-AES copy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-AES copy.txt"; sourceTree = "<group>"; };
-		BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveApi.swift; sourceTree = "<group>"; };
 		BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestAppDelegate.swift; sourceTree = "<group>"; };
 		BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestSceneDelegate.swift; sourceTree = "<group>"; };
 		BCBB66D427C17E27006DC95A /* datachest-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "datachest-ios.entitlements"; sourceTree = "<group>"; };
@@ -106,15 +106,15 @@
 		BC884188274FF44C00E6E1E2 /* datachest-ios */ = {
 			isa = PBXGroup;
 			children = (
+				BCA5181F27CA84FD00D98A49 /* cloud-provider-api */,
 				BCBB66D427C17E27006DC95A /* datachest-ios.entitlements */,
 				BCFBCA0A27C105B3000DF554 /* auth */,
 				BCBC57FA27BC079C0094EC20 /* helpers */,
-				BCBC57F527BC06170094EC20 /* networking */,
+				BCBC57F527BC06170094EC20 /* network-service */,
 				BCBC57F427BC06000094EC20 /* views */,
 				BC8841A0274FF57000E6E1E2 /* core */,
 				BC884189274FF44C00E6E1E2 /* datachest_iosApp.swift */,
 				BC88418D274FF44D00E6E1E2 /* Assets.xcassets */,
-				BCA7B5B527C033DF00C119E4 /* GoogleService-Info.plist */,
 				BC884192274FF44D00E6E1E2 /* Info.plist */,
 				BC88418F274FF44D00E6E1E2 /* Preview Content */,
 				BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */,
@@ -140,6 +140,14 @@
 			path = core;
 			sourceTree = "<group>";
 		};
+		BCA5181F27CA84FD00D98A49 /* cloud-provider-api */ = {
+			isa = PBXGroup;
+			children = (
+				BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */,
+			);
+			path = "cloud-provider-api";
+			sourceTree = "<group>";
+		};
 		BCBC57F427BC06000094EC20 /* views */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,12 +156,12 @@
 			path = views;
 			sourceTree = "<group>";
 		};
-		BCBC57F527BC06170094EC20 /* networking */ = {
+		BCBC57F527BC06170094EC20 /* network-service */ = {
 			isa = PBXGroup;
 			children = (
 				BCBC57F627BC06410094EC20 /* FileUploadService.swift */,
 			);
-			path = networking;
+			path = "network-service";
 			sourceTree = "<group>";
 		};
 		BCBC57FA27BC079C0094EC20 /* helpers */ = {
@@ -238,7 +246,6 @@
 				BC8841B02750520300E6E1E2 /* test-shamir.txt in Resources */,
 				BC88418E274FF44D00E6E1E2 /* Assets.xcassets in Resources */,
 				BC8841B3275059D500E6E1E2 /* test-AES copy.txt in Resources */,
-				BCA7B5B627C033DF00C119E4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +298,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCA5182127CA854100D98A49 /* GoogleDriveApi.swift in Sources */,
 				BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */,
 				BC88418C274FF44C00E6E1E2 /* ContentView.swift in Sources */,
 				BCBC57F727BC06410094EC20 /* FileUploadService.swift in Sources */,

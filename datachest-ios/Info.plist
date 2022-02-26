@@ -22,7 +22,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>db-l53u25g8913p5mg</string>
-				<string>com.googleusercontent.apps.236269860524-943lpvph7n137fsd6kiq7fp94009gt4n</string>
+				<string>com.googleusercontent.apps.932213055425-c4r3gu990j7a6ncg0lsffktaf0vgln2m</string>
 				<string>msauth.petercurikjr.datachest-ios</string>
 			</array>
 		</dict>
@@ -33,8 +33,8 @@
 	<array>
 		<string>dbapi-2</string>
 		<string>dbapi-8-emm</string>
-        <string>msauthv2</string>
-        <string>msauthv3</string>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

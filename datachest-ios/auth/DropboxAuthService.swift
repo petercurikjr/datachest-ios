@@ -5,7 +5,6 @@
 //  Created by Peter Čuřík Jr. on 19/02/2022.
 //
 
-import Foundation
 import SwiftyDropbox
 
 class DropboxAuthService: ObservableObject {
@@ -23,9 +22,13 @@ class DropboxAuthService: ObservableObject {
     }
     
     func signOutDropbox() {
+        print("DROPBOX signed out.")
+        DropboxClientsManager.unlinkClients()
+    }
+    
+    func getDropboxAccessTokenFromKeychain() {
         let db = DropboxOAuthManager(appKey: "l53u25g8913p5mg")
         print((db.getFirstAccessToken()?.accessToken) ?? "no access token")
-        DropboxClientsManager.unlinkClients()
     }
 }
 

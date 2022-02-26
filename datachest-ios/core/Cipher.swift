@@ -26,7 +26,7 @@ class Cipher {
                 let chunkPtr = Array(UnsafeBufferPointer(start: buffer, count: bufferSize))
                 let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: key)
                 //print(String(decoding: (ciphertextChunk.ciphertext), as: UTF8.self))
-                
+                // TODO send to backend
                 // decrypt
                 let sealedBox = try! AES.GCM.SealedBox(combined: ciphertextChunk.combined!)
                 let plaintextChunk = try! AES.GCM.open(sealedBox, using: key)
