@@ -17,7 +17,7 @@
 		BC8841AD27504E2500E6E1E2 /* test-AES.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841AC27504E2500E6E1E2 /* test-AES.txt */; };
 		BC8841B02750520300E6E1E2 /* test-shamir.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841AF2750520300E6E1E2 /* test-shamir.txt */; };
 		BC8841B3275059D500E6E1E2 /* test-AES copy.txt in Resources */ = {isa = PBXBuildFile; fileRef = BC8841B2275059D500E6E1E2 /* test-AES copy.txt */; };
-		BCA5182127CA854100D98A49 /* GoogleDriveApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */; };
+		BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA5182027CA854100D98A49 /* GoogleDriveService.swift */; };
 		BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */; };
 		BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */; };
 		BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */; };
@@ -40,7 +40,7 @@
 		BC8841AC27504E2500E6E1E2 /* test-AES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-AES.txt"; sourceTree = "<group>"; };
 		BC8841AF2750520300E6E1E2 /* test-shamir.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-shamir.txt"; sourceTree = "<group>"; };
 		BC8841B2275059D500E6E1E2 /* test-AES copy.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "test-AES copy.txt"; sourceTree = "<group>"; };
-		BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveApi.swift; sourceTree = "<group>"; };
+		BCA5182027CA854100D98A49 /* GoogleDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveService.swift; sourceTree = "<group>"; };
 		BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestAppDelegate.swift; sourceTree = "<group>"; };
 		BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestSceneDelegate.swift; sourceTree = "<group>"; };
 		BCBB66D427C17E27006DC95A /* datachest-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "datachest-ios.entitlements"; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 		BCA5181F27CA84FD00D98A49 /* cloud-provider-api */ = {
 			isa = PBXGroup;
 			children = (
-				BCA5182027CA854100D98A49 /* GoogleDriveApi.swift */,
+				BCA5182027CA854100D98A49 /* GoogleDriveService.swift */,
 			);
 			path = "cloud-provider-api";
 			sourceTree = "<group>";
@@ -298,7 +298,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCA5182127CA854100D98A49 /* GoogleDriveApi.swift in Sources */,
+				BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */,
 				BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */,
 				BC88418C274FF44C00E6E1E2 /* ContentView.swift in Sources */,
 				BCBC57F727BC06410094EC20 /* FileUploadService.swift in Sources */,
