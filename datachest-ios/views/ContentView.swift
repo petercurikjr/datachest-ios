@@ -12,8 +12,6 @@ struct ContentView: View {
     @EnvironmentObject var microsoftAuthService: MicrosoftAuthService
     @EnvironmentObject var dropboxAuthService: DropboxAuthService
     
-    @EnvironmentObject var googleDriveService: GoogleDriveService
-    
     @State var showDocumentPicker = false
     
     var body: some View {
@@ -25,10 +23,16 @@ struct ContentView: View {
                 Button(action: googleAuthService.signOutGoogle) {
                     Text("Sign out from Google")
                 }
+//                Button(action: { googleDriveService.listFiles(folderId: "root") }) {
+//                    Text("List folders")
+//                }
+//                Button(action: { googleDriveService.listFiles(folderId: "root") }) {
+//                    Text("List files")
+//                }
                 Button(action: { showDocumentPicker.toggle() }) {
-                    Text("Upload to Google")
+                    Text("Upload a file")
                 }.padding(.bottom)
-                
+
                 Button(action: microsoftAuthService.signInMicrosoft) {
                     Text("Sign in with Microsoft")
                 }
@@ -42,17 +46,15 @@ struct ContentView: View {
                 Button(action: dropboxAuthService.signOutDropbox) {
                     Text("Sign out from Dropbox")
                 }
-            }.fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [.text]) { (res) in
+            }.fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [.text, .pdf]) { (res) in
                 do {
                     let fileUrl = try res.get()
-                    self.googleDriveService.uploadFile(url: fileUrl)
+                    GoogleDriveFacade.shared.uploadLargeFile(fileUrl: fileUrl)
                 }
                 catch {
                     // error
                 }
             }
-        }.onAppear {
-            self.googleAuthService.setGoogleDriveService(service: self.googleDriveService)
         }
     }
 }

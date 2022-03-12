@@ -15,9 +15,9 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
                   case .success(let accessToken):
                     print("DROPBOX signed in.", accessToken.accessToken)
                   case .cancel:
-                      print("Authorization flow was manually canceled by user!")
+                    print("Authorization flow was manually canceled by user!")
                   case .error(_, let description):
-                      print("Error: \(String(describing: description))")
+                    print("Error: \(String(describing: description))")
                 }
             }
         }

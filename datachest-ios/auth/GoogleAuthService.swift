@@ -7,7 +7,6 @@
 
 import SwiftUI
 import GoogleSignIn
-import GoogleAPIClientForREST
 
 class GoogleAuthService: ObservableObject {
     var gdService: GoogleDriveService?
@@ -26,7 +25,7 @@ class GoogleAuthService: ObservableObject {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                 print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
-                self.initDriveService(user)
+                self.handleUser(user)
             }
         }
         else {
@@ -37,7 +36,7 @@ class GoogleAuthService: ObservableObject {
             GIDSignIn.sharedInstance.signIn(with: self.config, presenting: rootViewController) { user, error in
                 print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
                 GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive"], presenting: rootViewController, callback: { user, error in
-                    print("here scopes")
+                    self.handleUser(user)
                 })
             }
         }
@@ -48,9 +47,14 @@ class GoogleAuthService: ObservableObject {
         print("GOOGLE signed out.")
     }
     
-    private func initDriveService(_ user: GIDGoogleUser?) {
-        let service = GTLRDriveService()
-        service.authorizer = user?.authentication.fetcherAuthorizer()
-        self.gdService?.setGoogleDriveService(service: service)
+    private func handleUser(_ user: GIDGoogleUser?) {
+        guard user != nil else {
+            return
+        }
+        
+        let accessToken = user!.authentication.accessToken
+        
+        KeychainHelper.shared.saveToKeychain(string: user!.authentication.accessToken, service: "access-token", account: "google")
+        SignedUser.shared.googleAccessToken = accessToken
     }
 }

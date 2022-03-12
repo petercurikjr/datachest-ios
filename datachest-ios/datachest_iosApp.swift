@@ -12,15 +12,10 @@ struct datachest_iosApp: App {
     // attach the UIKit's AppDelegate to the SwiftUI main application
     @UIApplicationDelegateAdaptor(DatachestAppDelegate.self) var datachestAppDelegate
     
-    // api services
-    @StateObject var googleDriveService = GoogleDriveService()
-    
-    // auth services
+    // auth services TODO SPRAVIT Z TOHO SINGLETONY NETREBA TO TAKTO INICIALIZOVAT
     @StateObject var googleAuthService = GoogleAuthService()
     @StateObject var microsoftAuthService = MicrosoftAuthService()
     @StateObject var dropboxAuthService = DropboxAuthService()
-
-    var test = Cipher()
     
     var body: some Scene {
         WindowGroup {
@@ -28,8 +23,6 @@ struct datachest_iosApp: App {
                 .environmentObject(googleAuthService)
                 .environmentObject(microsoftAuthService)
                 .environmentObject(dropboxAuthService)
-            
-                .environmentObject(googleDriveService)
         }
     }
 }
