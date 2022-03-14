@@ -12,7 +12,9 @@ struct ContentView: View {
     @EnvironmentObject var microsoftAuthService: MicrosoftAuthService
     @EnvironmentObject var dropboxAuthService: DropboxAuthService
     
-    @State var showDocumentPicker = false
+    @State var showDocumentPickerGoogle = false
+    @State var showDocumentPickerDropbox = false
+    @State var showDocumentPickerMicrosoft = false
     
     var body: some View {
         VStack {
@@ -23,38 +25,48 @@ struct ContentView: View {
                 Button(action: googleAuthService.signOutGoogle) {
                     Text("Sign out from Google")
                 }
-//                Button(action: { googleDriveService.listFiles(folderId: "root") }) {
-//                    Text("List folders")
-//                }
-//                Button(action: { googleDriveService.listFiles(folderId: "root") }) {
-//                    Text("List files")
-//                }
-                Button(action: { showDocumentPicker.toggle() }) {
+                Button(action: { showDocumentPickerGoogle.toggle() }) {
                     Text("Upload a file")
                 }.padding(.bottom)
-
+            }.fileImporter(isPresented: $showDocumentPickerGoogle, allowedContentTypes: [.text, .pdf]) { res in
+                do {
+                    let fileUrl = try res.get()
+                    GoogleDriveFacade.shared.uploadFile(fileUrl: fileUrl)
+                }
+                catch {
+                    // error
+                }
+            }
+            
+            VStack {
                 Button(action: microsoftAuthService.signInMicrosoft) {
                     Text("Sign in with Microsoft")
                 }
                 Button(action: microsoftAuthService.signOutMicrosoft) {
                     Text("Sign out from Microsoft")
                 }.padding(.bottom)
-                
+            }
+            
+            VStack {
                 Button(action: dropboxAuthService.signInDropbox) {
                     Text("Sign in with Dropbox")
                 }
                 Button(action: dropboxAuthService.signOutDropbox) {
                     Text("Sign out from Dropbox")
                 }
-            }.fileImporter(isPresented: $showDocumentPicker, allowedContentTypes: [.text, .pdf]) { (res) in
+                Button(action: { showDocumentPickerDropbox.toggle() }) {
+                    Text("Upload a file")
+                }
+            }.fileImporter(isPresented: $showDocumentPickerDropbox, allowedContentTypes: [.text, .pdf]) { res in
                 do {
                     let fileUrl = try res.get()
-                    GoogleDriveFacade.shared.uploadLargeFile(fileUrl: fileUrl)
+                    DropboxFacade.shared.uploadFile(fileUrl: fileUrl)
                 }
                 catch {
                     // error
                 }
             }
+            
         }
     }
 }

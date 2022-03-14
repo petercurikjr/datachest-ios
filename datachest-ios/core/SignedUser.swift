@@ -9,8 +9,9 @@ import Foundation
 
 class SignedUser {
     var googleAccessToken: String = ""
+    var dropboxAccessToken: String = ""
+    var microsoftAccessToken: String = ""
     
     static let shared = SignedUser()
     private init() {}
-
 }

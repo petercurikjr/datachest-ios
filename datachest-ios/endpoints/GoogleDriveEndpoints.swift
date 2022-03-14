@@ -8,7 +8,7 @@
 import Foundation
 
 enum GoogleDriveEndpoints: Endpoint {
-    case uploadLargeFile(resumableURL: String, chunkSize: Int, bytes: String)
+    case uploadFile(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
     case downloadFile
     case listFiles
@@ -26,7 +26,7 @@ enum GoogleDriveEndpoints: Endpoint {
         switch self {
         case .getResumableUploadURL:
             return baseURLString + "/v3/files?uploadType=resumable"
-        case .uploadLargeFile(let resumableURL, _, _):
+        case .uploadFile(let resumableURL, _, _):
             return resumableURL
         case .downloadFile:
             return "TODO"
@@ -41,7 +41,7 @@ enum GoogleDriveEndpoints: Endpoint {
         switch self {
         case .getResumableUploadURL:
             return "POST"
-        case .uploadLargeFile:
+        case .uploadFile:
             return "PUT"
         case .downloadFile:
             return "TODO"
@@ -56,7 +56,7 @@ enum GoogleDriveEndpoints: Endpoint {
         switch self {
         case .getResumableUploadURL:
             return ["Authorization": authorization]
-        case .uploadLargeFile(_, let chunkSize, let bytes):
+        case .uploadFile(_, let chunkSize, let bytes):
             return ["Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)",
                     "Authorization": authorization]

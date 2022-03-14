@@ -54,7 +54,7 @@ class GoogleAuthService: ObservableObject {
         
         let accessToken = user!.authentication.accessToken
         
-        KeychainHelper.shared.saveToKeychain(string: user!.authentication.accessToken, service: "access-token", account: "google")
+        KeychainHelper.shared.saveToKeychain(string: accessToken, service: "access-token", account: "google")
         SignedUser.shared.googleAccessToken = accessToken
     }
 }

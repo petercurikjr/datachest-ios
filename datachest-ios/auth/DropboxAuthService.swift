@@ -25,10 +25,5 @@ class DropboxAuthService: ObservableObject {
         print("DROPBOX signed out.")
         DropboxClientsManager.unlinkClients()
     }
-    
-    func getDropboxAccessTokenFromKeychain() {
-        let db = DropboxOAuthManager(appKey: "l53u25g8913p5mg")
-        print((db.getFirstAccessToken()?.accessToken) ?? "no access token")
-    }
 }
 

@@ -10,11 +10,11 @@ import CryptoKit
 
 class GoogleDriveFacade {
     static let shared = GoogleDriveFacade()
-    var uploadSessionsActive: [GoogleLargeFileUploadSession] = []
+    var activeUploadSessions: [GoogleDriveFileUploadSession] = []
 
     private init() {}
 
-    func uploadLargeFile(fileUrl: URL) {
-        uploadSessionsActive.append(GoogleLargeFileUploadSession(fileUrl: fileUrl))
+    func uploadFile(fileUrl: URL) {
+        activeUploadSessions.append(GoogleDriveFileUploadSession(fileUrl: fileUrl))
     }
 }

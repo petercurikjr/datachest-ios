@@ -12,8 +12,9 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
          let oauthCompletion: DropboxOAuthCompletion = {
             if let authResult = $0 {
                 switch authResult {
-                  case .success(let accessToken):
-                    print("DROPBOX signed in.", accessToken.accessToken)
+                  case .success(let token):
+                    print("DROPBOX signed in.", token.accessToken)
+                    self.handleToken(token)
                   case .cancel:
                     print("Authorization flow was manually canceled by user!")
                   case .error(_, let description):
@@ -26,5 +27,16 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
             // stop iterating after the first handle-able url
             if DropboxClientsManager.handleRedirectURL(context.url, completion: oauthCompletion) { break }
         }
+    }
+    
+    private func handleToken(_ token: DropboxAccessToken?) {
+        guard token != nil else {
+            return
+        }
+        
+        let accessToken = token!.accessToken
+        
+        KeychainHelper.shared.saveToKeychain(string: accessToken, service: "access-token", account: "dropbox")
+        SignedUser.shared.dropboxAccessToken = accessToken
     }
 }
