@@ -44,7 +44,18 @@ struct ContentView: View {
                 }
                 Button(action: microsoftAuthService.signOutMicrosoft) {
                     Text("Sign out from Microsoft")
+                }
+                Button(action: { showDocumentPickerMicrosoft.toggle() }) {
+                    Text("Upload a file")
                 }.padding(.bottom)
+            }.fileImporter(isPresented: $showDocumentPickerMicrosoft, allowedContentTypes: [.text, .pdf]) { res in
+                do {
+                    let fileUrl = try res.get()
+                    MicrosoftOneDriveFacade.shared.uploadFile(fileUrl: fileUrl)
+                }
+                catch {
+                    // error
+                }
             }
             
             VStack {

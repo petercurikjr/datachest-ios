@@ -34,6 +34,7 @@ class MicrosoftAuthService: ObservableObject {
         
         application?.acquireToken(with: interactiveParameters) { result, error in
             print("MICROSOFT signed in.", (result?.accessToken) ?? "no token")
+            self.handleUser(result)
             self.signedInAccount = result?.account
         }
     }
@@ -54,5 +55,16 @@ class MicrosoftAuthService: ObservableObject {
             
             print("MICROSOFT signed out.")
         }
+    }
+    
+    private func handleUser(_ user: MSALResult?) {
+        guard user != nil else {
+            return
+        }
+        
+        let accessToken = user!.accessToken
+        
+        KeychainHelper.shared.saveToKeychain(string: accessToken, service: "access-token", account: "microsoft")
+        SignedUser.shared.microsoftAccessToken = accessToken
     }
 }

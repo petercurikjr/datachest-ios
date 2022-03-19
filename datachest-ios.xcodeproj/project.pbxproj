@@ -17,8 +17,13 @@
 		BC9E65A827D7C68F00A6E99F /* SignedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E65A727D7C68F00A6E99F /* SignedUser.swift */; };
 		BC9E65AB27D7C72500A6E99F /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E65AA27D7C72500A6E99F /* KeychainHelper.swift */; };
 		BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA5182027CA854100D98A49 /* GoogleDriveService.swift */; };
+		BCA768F127E1B7DB002F0817 /* MicrosoftOneDriveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */; };
 		BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */; };
 		BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */; };
+		BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */; };
+		BCAD586627DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */; };
+		BCAD586927DFA9AF005C4B59 /* MicrosoftOneDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */; };
+		BCAD586D27DFB81F005C4B59 /* MicrosoftOneDriveEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586C27DFB81F005C4B59 /* MicrosoftOneDriveEndpoints.swift */; };
 		BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */; };
 		BCBC580027BC101B0094EC20 /* GoogleAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBC57FF27BC101B0094EC20 /* GoogleAuthService.swift */; };
 		BCBC6C3E27D7F22D00E16BA2 /* GoogleDriveFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBC6C3D27D7F22D00E16BA2 /* GoogleDriveFacade.swift */; };
@@ -47,8 +52,13 @@
 		BC9E65A727D7C68F00A6E99F /* SignedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedUser.swift; sourceTree = "<group>"; };
 		BC9E65AA27D7C72500A6E99F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		BCA5182027CA854100D98A49 /* GoogleDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveService.swift; sourceTree = "<group>"; };
+		BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveModel.swift; sourceTree = "<group>"; };
 		BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestAppDelegate.swift; sourceTree = "<group>"; };
 		BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestSceneDelegate.swift; sourceTree = "<group>"; };
+		BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFacade.swift; sourceTree = "<group>"; };
+		BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFileUploadSession.swift; sourceTree = "<group>"; };
+		BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveService.swift; sourceTree = "<group>"; };
+		BCAD586C27DFB81F005C4B59 /* MicrosoftOneDriveEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveEndpoints.swift; sourceTree = "<group>"; };
 		BCBB66D427C17E27006DC95A /* datachest-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "datachest-ios.entitlements"; sourceTree = "<group>"; };
 		BCBB66D627C17F0F006DC95A /* DropboxAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxAuthService.swift; sourceTree = "<group>"; };
 		BCBC57FF27BC101B0094EC20 /* GoogleAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthService.swift; sourceTree = "<group>"; };
@@ -161,6 +171,9 @@
 				BCEC97A127DDD817007416F5 /* DropboxFacade.swift */,
 				BCEC97A427DDD84E007416F5 /* DropboxFileUploadSession.swift */,
 				BCBF3A5927DE3AA600566CD7 /* DropboxService.swift */,
+				BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */,
+				BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */,
+				BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */,
 				BCEC97A727DDD8B1007416F5 /* FileUploadSession.swift */,
 				BCBF3A5C27DE3B1500566CD7 /* NetworkService.swift */,
 			);
@@ -179,8 +192,9 @@
 			isa = PBXGroup;
 			children = (
 				BCC170E827D682450073789D /* GoogleDriveEndpoints.swift */,
-				BC9E65A427D7B75000A6E99F /* Endpoint.swift */,
 				BCBF3A6027DE3DC400566CD7 /* DropboxEndpoints.swift */,
+				BCAD586C27DFB81F005C4B59 /* MicrosoftOneDriveEndpoints.swift */,
+				BC9E65A427D7B75000A6E99F /* Endpoint.swift */,
 			);
 			path = endpoints;
 			sourceTree = "<group>";
@@ -189,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				BCBF3A6427DE4EF300566CD7 /* DropboxModel.swift */,
+				BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -319,6 +334,7 @@
 				BCBF3A5A27DE3AA600566CD7 /* DropboxService.swift in Sources */,
 				BCEC97A227DDD817007416F5 /* DropboxFacade.swift in Sources */,
 				BCEC97A527DDD84E007416F5 /* DropboxFileUploadSession.swift in Sources */,
+				BCAD586927DFA9AF005C4B59 /* MicrosoftOneDriveService.swift in Sources */,
 				BC9E65A827D7C68F00A6E99F /* SignedUser.swift in Sources */,
 				BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */,
 				BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */,
@@ -328,15 +344,19 @@
 				BC8841A2274FF57C00E6E1E2 /* ShamirSecretSharing.swift in Sources */,
 				BCCD6CA127DD034400566F8A /* GoogleDriveFileUploadSession.swift in Sources */,
 				BCBF3A6127DE3DC400566CD7 /* DropboxEndpoints.swift in Sources */,
+				BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */,
 				BCBF3A5D27DE3B1500566CD7 /* NetworkService.swift in Sources */,
 				BCEC97A827DDD8B1007416F5 /* FileUploadSession.swift in Sources */,
 				BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */,
 				BCBC6C3E27D7F22D00E16BA2 /* GoogleDriveFacade.swift in Sources */,
 				BC88418A274FF44C00E6E1E2 /* datachest_iosApp.swift in Sources */,
+				BCA768F127E1B7DB002F0817 /* MicrosoftOneDriveModel.swift in Sources */,
 				BCFBCA0D27C10929000DF554 /* MicrosoftAuthService.swift in Sources */,
 				BCC170E927D682450073789D /* GoogleDriveEndpoints.swift in Sources */,
 				BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */,
+				BCAD586D27DFB81F005C4B59 /* MicrosoftOneDriveEndpoints.swift in Sources */,
 				BC9E65AB27D7C72500A6E99F /* KeychainHelper.swift in Sources */,
+				BCAD586627DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift in Sources */,
 				BCBC580027BC101B0094EC20 /* GoogleAuthService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
