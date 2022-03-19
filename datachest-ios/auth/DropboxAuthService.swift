@@ -7,9 +7,9 @@
 
 import SwiftyDropbox
 
-class DropboxAuthService: ObservableObject {
-    
-    init() {
+class DropboxAuthService {
+    static let shared = DropboxAuthService()
+    private init() {
         DropboxClientsManager.setupWithAppKey("l53u25g8913p5mg")
     }
     

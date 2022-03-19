@@ -8,21 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var googleAuthService: GoogleAuthService
-    @EnvironmentObject var microsoftAuthService: MicrosoftAuthService
-    @EnvironmentObject var dropboxAuthService: DropboxAuthService
-    
     @State var showDocumentPickerGoogle = false
     @State var showDocumentPickerDropbox = false
     @State var showDocumentPickerMicrosoft = false
     
+    @StateObject var networkService = NetworkService.shared
+    
     var body: some View {
         VStack {
             VStack {
-                Button(action: googleAuthService.signInGoogle) {
+                Button(action: GoogleAuthService.shared.signInGoogle) {
                     Text("Sign in with Google")
                 }
-                Button(action: googleAuthService.signOutGoogle) {
+                Button(action: GoogleAuthService.shared.signOutGoogle) {
                     Text("Sign out from Google")
                 }
                 Button(action: { showDocumentPickerGoogle.toggle() }) {
@@ -39,10 +37,10 @@ struct ContentView: View {
             }
             
             VStack {
-                Button(action: microsoftAuthService.signInMicrosoft) {
+                Button(action: MicrosoftAuthService.shared.signInMicrosoft) {
                     Text("Sign in with Microsoft")
                 }
-                Button(action: microsoftAuthService.signOutMicrosoft) {
+                Button(action: MicrosoftAuthService.shared.signOutMicrosoft) {
                     Text("Sign out from Microsoft")
                 }
                 Button(action: { showDocumentPickerMicrosoft.toggle() }) {
@@ -59,10 +57,10 @@ struct ContentView: View {
             }
             
             VStack {
-                Button(action: dropboxAuthService.signInDropbox) {
+                Button(action: DropboxAuthService.shared.signInDropbox) {
                     Text("Sign in with Dropbox")
                 }
-                Button(action: dropboxAuthService.signOutDropbox) {
+                Button(action: DropboxAuthService.shared.signOutDropbox) {
                     Text("Sign out from Dropbox")
                 }
                 Button(action: { showDocumentPickerDropbox.toggle() }) {
@@ -77,7 +75,9 @@ struct ContentView: View {
                     // error
                 }
             }
-            
+        }
+        .alert(item: $networkService.networkError) { alert in
+            Alert(title: Text("Error"), message: Text(alert.error), dismissButton: .cancel(Text("Close")))
         }
     }
 }

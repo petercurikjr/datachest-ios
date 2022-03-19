@@ -13,9 +13,9 @@ class GoogleDriveFileUploadSession: FileUploadSession {
     
     init(fileUrl: URL) {
         super.init(fileUrl: fileUrl, bufferSize: 4*262144)
-        GoogleDriveService.shared.getResumableUploadURL { data, response, error in
-            if response != nil {
-                self.sessionId = response!.headers.dictionary["Location"]
+        GoogleDriveService.shared.getResumableUploadURL { response in
+            if response.headers != nil {
+                self.sessionId = response.headers!["Location"]
                 self.upload()
             }
         }
@@ -36,26 +36,10 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                 bytes: "\(startRange)-\(endRange)/\(self.fileSize!)",
                 chunkSize: readStreamBytes,
                 resumableURL: self.sessionId!
-            ) { data, response, error in
-                if error != nil {
-                    print("remote is down. details: ", error!)
-                }
-                
-                if response != nil {
-                    if !(200...299).contains(response!.statusCode) && !(response!.statusCode == 308) {
-                        print("unacceptable response code: ", response!.statusCode)
-                    }
-                    
-                    else {
-                        print("good", response!.statusCode)
-                        if self.ds!.hasBytesAvailable {
-                            self.bytesTransferred += readStreamBytes
-                            self.upload()
-                        }
-                        else {
-                            print("finished: ", data!)
-                        }
-                    }
+            ) { _ in
+                if self.ds!.hasBytesAvailable {
+                    self.bytesTransferred += readStreamBytes
+                    self.upload()
                 }
             }
         }

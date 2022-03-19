@@ -8,20 +8,15 @@
 import SwiftUI
 import GoogleSignIn
 
-class GoogleAuthService: ObservableObject {
-    var gdService: GoogleDriveService?
-    let config: GIDConfiguration
-    
-    init() {
+class GoogleAuthService {
+    static let shared = GoogleAuthService()
+    private init() {
         self.config = GIDConfiguration(clientID: "932213055425-c4r3gu990j7a6ncg0lsffktaf0vgln2m.apps.googleusercontent.com")
     }
     
-    public func setGoogleDriveService(service: GoogleDriveService) {
-        self.gdService = service
-    }
+    let config: GIDConfiguration
     
     func signInGoogle() {
-        // sign in user without interaction if there is a previously authenticated user in the keychain
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                 print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
@@ -29,7 +24,6 @@ class GoogleAuthService: ObservableObject {
             }
         }
         else {
-            // set a view where to show the authentication screen
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
             guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
 

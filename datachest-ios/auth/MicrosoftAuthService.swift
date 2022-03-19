@@ -8,13 +8,9 @@
 import SwiftUI
 import MSAL
 
-class MicrosoftAuthService: ObservableObject {
-    var authority: MSALB2CAuthority?
-    var pcaConfig: MSALPublicClientApplicationConfig?
-    var application: MSALPublicClientApplication?
-    var signedInAccount: MSALAccount?
-    
-    init() {
+class MicrosoftAuthService {
+    static let shared = MicrosoftAuthService()
+    private init() {
         do {
             self.authority = try MSALB2CAuthority(url: URL(string: "https://login.microsoftonline.com/common")!)
             self.pcaConfig = MSALPublicClientApplicationConfig(clientId: "b2b3ccb2-a174-4834-9ad3-bc7f68accdf7", redirectUri: nil, authority: authority)
@@ -24,6 +20,11 @@ class MicrosoftAuthService: ObservableObject {
             print(error)
         }
     }
+    
+    var authority: MSALB2CAuthority?
+    var pcaConfig: MSALPublicClientApplicationConfig?
+    var application: MSALPublicClientApplication?
+    var signedInAccount: MSALAccount?
     
     func signInMicrosoft() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }

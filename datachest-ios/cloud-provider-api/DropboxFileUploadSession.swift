@@ -14,14 +14,12 @@ class DropboxFileUploadSession: FileUploadSession {
     
     init(fileUrl: URL) {
         super.init(fileUrl: fileUrl, bufferSize: 4*262144)
-        DropboxService.shared.startUploadSession { data, response, error in
-            if data != nil {
-                let jsonRawObject = try? JSONSerialization.jsonObject(with: data!, options: [])
-                if let dictionary = jsonRawObject as? [String: Any] {
-                    if let sid = dictionary["session_id"] as? String {
-                        self.sessionId = sid
-                        self.upload()
-                    }
+        DropboxService.shared.startUploadSession { response in
+            let jsonRawObject = try? JSONSerialization.jsonObject(with: response.data, options: [])
+            if let dictionary = jsonRawObject as? [String: Any] {
+                if let sid = dictionary["session_id"] as? String {
+                    self.sessionId = sid
+                    self.upload()
                 }
             }
         }
@@ -44,10 +42,11 @@ class DropboxFileUploadSession: FileUploadSession {
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
                         print(jsonString)
-                        DropboxService.shared.uploadFile(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { data, response, error in
-                            print(response!.statusCode)
-                            self.bytesTransferred += readStreamBytes
-                            self.upload()
+                        DropboxService.shared.uploadFile(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
+                            if self.ds!.hasBytesAvailable {
+                                self.bytesTransferred += readStreamBytes
+                                self.upload()
+                            }
                         }
                     }
                 }
@@ -62,10 +61,8 @@ class DropboxFileUploadSession: FileUploadSession {
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
                         print(jsonString)
-                        DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { data, response, error in
-                            print("finished")
-                            print(response!.statusCode)
-                            print(String(data: data!, encoding: .utf8)!)
+                        DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
+                            // empty closure
                         }
                     }
                 }

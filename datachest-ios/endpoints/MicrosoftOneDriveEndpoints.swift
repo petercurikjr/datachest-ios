@@ -10,7 +10,6 @@ import Foundation
 enum MicrosoftOneDriveEndpoints: Endpoint {
     case createUploadSession(fileName: String)
     case uploadFile(resumableURL: String, chunkSize: Int, bytes: String)
-    case finishUploadSession(sessionArg: String)
     case downloadFile
     case createFolder(parentId: String)
     case getFolderContents(parentId: String)
@@ -29,8 +28,6 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return baseURLString + "/items/root:/Datachest/Files/\(fileName):/createUploadSession"
         case .uploadFile(let resumableURL, _, _):
             return resumableURL
-        case .finishUploadSession:
-            return "TODO"
         case .downloadFile:
             return "TODO"
         case .createFolder(let parentId):
@@ -46,8 +43,6 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return "POST"
         case .uploadFile:
             return "PUT"
-        case .finishUploadSession:
-            return "TODO"
         case .downloadFile:
             return "TODO"
         case .createFolder:
@@ -65,8 +60,6 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return ["Authorization": authorization,
                     "Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)"]
-        case .finishUploadSession:
-            return ["Authorization": authorization]
         case .downloadFile:
             return ["Authorization": authorization]
         case .createFolder:

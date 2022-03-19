@@ -7,22 +7,22 @@
 
 import Foundation
 
-class GoogleDriveService: NetworkService {
+class GoogleDriveService {
     static let shared = GoogleDriveService()
-    private override init() { super.init() }
+    private init() {}
     
-    func getResumableUploadURL(completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: GoogleDriveEndpoints.getResumableUploadURL, data: nil) { data, response, error in
-            completion(data, response, error)
+    func getResumableUploadURL(completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.getResumableUploadURL, data: nil) { response in
+            completion(response)
         }
     }
     
-    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(
+    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(
             endpoint: GoogleDriveEndpoints.uploadFile(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
             data: chunk
-        ) { data, response, error in
-            completion(data, response, error)
+        ) { response in
+            completion(response)
         }
     }
 }

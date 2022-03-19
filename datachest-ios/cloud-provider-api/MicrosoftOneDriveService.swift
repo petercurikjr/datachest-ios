@@ -7,34 +7,35 @@
 
 import Foundation
 
-class MicrosoftOneDriveService: NetworkService {
+class MicrosoftOneDriveService {
     static let shared = MicrosoftOneDriveService()
-    private override init() { super.init() }
+    private init() {}
     
-    func createUploadSession(fileName: String, fileMetadata: Data?, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: MicrosoftOneDriveEndpoints.createUploadSession(fileName: fileName), data: fileMetadata) { data, response, error in
-            completion(data, response, error)
+    func createUploadSession(fileName: String, fileMetadata: Data?, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createUploadSession(fileName: fileName), data: fileMetadata) { response in
+            completion(response)
         }
     }
     
-    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(
+    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(
             endpoint: MicrosoftOneDriveEndpoints.uploadFile(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
             data: chunk
-        ) { data, response, error in
-            completion(data, response, error)
+        ) { response in
+            completion(response)
         }
     }
     
-    func createFolder(parentId: String, folderMetadata: Data, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: MicrosoftOneDriveEndpoints.createFolder(parentId: parentId), data: folderMetadata) { data, response, error in
-            completion(data, response, error)
+    /// POTREBUJEME TIETO METODY ??
+    func createFolder(parentId: String, folderMetadata: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createFolder(parentId: parentId), data: folderMetadata) { response in
+            completion(response)
         }
     }
     
-    func getFolderContents(parentId: String, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: MicrosoftOneDriveEndpoints.getFolderContents(parentId: parentId), data: nil) { data, response, error in
-            completion(data, response, error)
+    func getFolderContents(parentId: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.getFolderContents(parentId: parentId), data: nil) { response in
+            completion(response)
         }
     }
 }

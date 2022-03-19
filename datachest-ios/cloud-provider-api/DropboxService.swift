@@ -7,25 +7,25 @@
 
 import Foundation
 
-class DropboxService: NetworkService {
+class DropboxService {
     static let shared = DropboxService()
-    private override init() { super.init() }
+    private init() {}
     
-    func startUploadSession(completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: DropboxEndpoints.startUploadSession, data: nil) { data, response, error in
-            completion(data, response, error)
+    func startUploadSession(completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.startUploadSession, data: nil) { response in
+            completion(response)
         }
     }
     
-    func uploadFile(chunk: Data, sessionArg: String, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: DropboxEndpoints.uploadFile(sessionArg: sessionArg), data: chunk) { data, response, error in
-            completion(data, response, error)
+    func uploadFile(chunk: Data, sessionArg: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadFile(sessionArg: sessionArg), data: chunk) { response in
+            completion(response)
         }
     }
     
-    func finishUploadSession(chunk: Data, sessionArg: String, completion: @escaping (Data?, HTTPURLResponse?, Error?) -> Void) {
-        self.request(endpoint: DropboxEndpoints.finishUploadSession(sessionArg: sessionArg), data: chunk) { data, response, error in
-            completion(data, response, error )
+    func finishUploadSession(chunk: Data, sessionArg: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.finishUploadSession(sessionArg: sessionArg), data: chunk) { response in
+            completion(response)
         }
     }
 }
