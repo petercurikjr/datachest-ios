@@ -55,12 +55,11 @@ class DropboxFileUploadSession: FileUploadSession {
             else {
                 let sessionArg = DropboxFinishUploadMetadata(
                     cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: self.bytesTransferred),
-                    commit: DropboxUploadFileCommit(path: "/Datachest/filename", mode: "add", autorename: true)
+                    commit: DropboxUploadFileCommit(path: "/Datachest/Files/filename", mode: "add", autorename: true)
                 )
                 
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
-                        print(jsonString)
                         DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
                             // empty closure
                         }

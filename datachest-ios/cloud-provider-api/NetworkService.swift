@@ -60,6 +60,7 @@ class NetworkService: ObservableObject {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !((200...299).contains(responseCode) || (responseCode == 308)) || error != nil
         if hasError {
+            print("ERROR", String(data: data!, encoding: .utf8)!)
             DispatchQueue.main.async {
                 self.networkError = NetworkError(error: "Something went wrong when communicating with cloud providers. Please try again later.")
             }

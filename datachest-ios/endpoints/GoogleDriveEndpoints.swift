@@ -11,11 +11,11 @@ enum GoogleDriveEndpoints: Endpoint {
     case uploadFile(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
     case downloadFile
-    case listFiles
-    case listFolders
+    case listFiles(q: String)
+    case createFolder
     //
     private var baseURLString: String {
-        return "https://www.googleapis.com/upload/drive"
+        return "https://www.googleapis.com"
     }
     
     private var authorization: String {
@@ -25,15 +25,15 @@ enum GoogleDriveEndpoints: Endpoint {
     var url: String {
         switch self {
         case .getResumableUploadURL:
-            return baseURLString + "/v3/files?uploadType=resumable"
+            return baseURLString + "/upload/drive/v3/files?uploadType=resumable"
         case .uploadFile(let resumableURL, _, _):
             return resumableURL
         case .downloadFile:
             return "TODO"
-        case .listFiles:
-            return "TODO"
-        case .listFolders:
-            return "TODO"
+        case .listFiles(let q):
+            return baseURLString + "/drive/v3/files" + q
+        case .createFolder:
+            return baseURLString + "/drive/v3/files"
         }
     }
     
@@ -46,16 +46,17 @@ enum GoogleDriveEndpoints: Endpoint {
         case .downloadFile:
             return "TODO"
         case .listFiles:
-            return "TODO"
-        case .listFolders:
-            return "TODO"
+            return "GET"
+        case .createFolder:
+            return "POST"
         }
     }
 
     var headers: [String: String] {
         switch self {
         case .getResumableUploadURL:
-            return ["Authorization": authorization]
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
         case .uploadFile(_, let chunkSize, let bytes):
             return ["Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)",
@@ -64,8 +65,9 @@ enum GoogleDriveEndpoints: Endpoint {
             return ["Authorization": authorization]
         case .listFiles:
             return ["Authorization": authorization]
-        case .listFolders:
-            return ["Authorization": authorization]
+        case .createFolder:
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
         }
     }
 }

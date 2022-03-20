@@ -11,8 +11,8 @@ class GoogleDriveService {
     static let shared = GoogleDriveService()
     private init() {}
     
-    func getResumableUploadURL(completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.getResumableUploadURL, data: nil) { response in
+    func getResumableUploadURL(metadata: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.getResumableUploadURL, data: metadata) { response in
             completion(response)
         }
     }
@@ -22,6 +22,18 @@ class GoogleDriveService {
             endpoint: GoogleDriveEndpoints.uploadFile(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
             data: chunk
         ) { response in
+            completion(response)
+        }
+    }
+    
+    func listFiles(q: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.listFiles(q: q), data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func createFolder(metadata: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.createFolder, data: metadata) { response in
             completion(response)
         }
     }
