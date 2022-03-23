@@ -9,8 +9,9 @@ import Foundation
 
 enum DropboxEndpoints: Endpoint {
     case startUploadSession
-    case uploadFile(sessionArg: String)
+    case uploadFileInChunks(sessionArg: String)
     case finishUploadSession(sessionArg: String)
+    case uploadKeyShareFile(uploadArg: String)
     case downloadFile
     case listFiles
     case listFolders
@@ -27,10 +28,12 @@ enum DropboxEndpoints: Endpoint {
         switch self {
         case .startUploadSession:
             return baseURLString + "/upload_session/start"
-        case .uploadFile:
+        case .uploadFileInChunks:
             return baseURLString + "/upload_session/append_v2"
         case .finishUploadSession:
             return baseURLString + "/upload_session/finish"
+        case .uploadKeyShareFile:
+            return baseURLString + "/upload"
         case .downloadFile:
             return "TODO"
         case .listFiles:
@@ -44,9 +47,11 @@ enum DropboxEndpoints: Endpoint {
         switch self {
         case .startUploadSession:
             return "POST"
-        case .uploadFile:
+        case .uploadFileInChunks:
             return "POST"
         case .finishUploadSession:
+            return "POST"
+        case .uploadKeyShareFile:
             return "POST"
         case .downloadFile:
             return "TODO"
@@ -62,13 +67,17 @@ enum DropboxEndpoints: Endpoint {
         case .startUploadSession:
             return ["Authorization": authorization,
                     "Content-Type": "application/octet-stream"]
-        case .uploadFile(let sessionArg):
+        case .uploadFileInChunks(let sessionArg):
             return ["Authorization": authorization,
                     "Dropbox-API-Arg": sessionArg,
                     "Content-Type": "application/octet-stream"]
         case .finishUploadSession(let sessionArg):
             return ["Authorization": authorization,
                     "Dropbox-API-Arg": sessionArg,
+                    "Content-Type": "application/octet-stream"]
+        case .uploadKeyShareFile(let uploadArg):
+            return ["Authorization": authorization,
+                    "Dropbox-API-Arg": uploadArg,
                     "Content-Type": "application/octet-stream"]
         case .downloadFile:
             return ["Authorization": authorization]

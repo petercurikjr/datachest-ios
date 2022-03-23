@@ -9,7 +9,8 @@ import Foundation
 
 enum MicrosoftOneDriveEndpoints: Endpoint {
     case createUploadSession(fileName: String)
-    case uploadFile(resumableURL: String, chunkSize: Int, bytes: String)
+    case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
+    case uploadKeyShareFile(fileName: String)
     case downloadFile
     case createFolder(parentId: String)
     case getFolderContents(parentId: String)
@@ -26,8 +27,10 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         switch self {
         case .createUploadSession(let fileName):
             return baseURLString + "/items/root:/Datachest/Files/\(fileName):/createUploadSession"
-        case .uploadFile(let resumableURL, _, _):
+        case .uploadFileInChunks(let resumableURL, _, _):
             return resumableURL
+        case .uploadKeyShareFile(let fileName):
+            return baseURLString + "/items/root:/Datachest/Keys/\(fileName):/content"
         case .downloadFile:
             return "TODO"
         case .createFolder(let parentId):
@@ -41,7 +44,9 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         switch self {
         case .createUploadSession:
             return "POST"
-        case .uploadFile:
+        case .uploadFileInChunks:
+            return "PUT"
+        case .uploadKeyShareFile:
             return "PUT"
         case .downloadFile:
             return "TODO"
@@ -56,10 +61,13 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         switch self {
         case .createUploadSession:
             return ["Authorization": authorization]
-        case .uploadFile(_, let chunkSize, let bytes):
+        case .uploadFileInChunks(_, let chunkSize, let bytes):
             return ["Authorization": authorization,
                     "Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)"]
+        case .uploadKeyShareFile:
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
         case .downloadFile:
             return ["Authorization": authorization]
         case .createFolder:

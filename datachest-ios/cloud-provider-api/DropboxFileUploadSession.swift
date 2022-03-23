@@ -19,13 +19,13 @@ class DropboxFileUploadSession: FileUploadSession {
             if let dictionary = jsonRawObject as? [String: Any] {
                 if let sid = dictionary["session_id"] as? String {
                     self.sessionId = sid
-                    self.upload()
+                    self.uploadFile()
                 }
             }
         }
     }
     
-    private func upload() {
+    private func uploadFile() {
         if self.ds != nil && self.sessionId != nil {
             let readStreamBytes = self.ds!.read(self.buffer, maxLength: self.bufferSize)
             if readStreamBytes < bufferSize { self.finishUpload = true }
@@ -41,11 +41,10 @@ class DropboxFileUploadSession: FileUploadSession {
 
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
-                        print(jsonString)
-                        DropboxService.shared.uploadFile(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
+                        DropboxService.shared.uploadFileInChunks(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
                             if self.ds!.hasBytesAvailable {
                                 self.bytesTransferred += readStreamBytes
-                                self.upload()
+                                self.uploadFile()
                             }
                         }
                     }
@@ -60,8 +59,13 @@ class DropboxFileUploadSession: FileUploadSession {
                 
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
-                        DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
-                            // empty closure
+                        DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { response in
+                            guard let fileInfo = try? JSONDecoder().decode(DropboxFileResponse.self, from: response.data) else {
+                                print("error decoding")
+                                return
+                            }
+                            self.uploadedFileID = String(fileInfo.id.dropFirst(3))
+                            self.distributeKeyShares()
                         }
                     }
                 }

@@ -17,25 +17,16 @@ class MicrosoftOneDriveService {
         }
     }
     
-    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
+    func uploadFileInChunks(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(
-            endpoint: MicrosoftOneDriveEndpoints.uploadFile(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
+            endpoint: MicrosoftOneDriveEndpoints.uploadFileInChunks(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
             data: chunk
         ) { response in
             completion(response)
         }
     }
     
-    /// POTREBUJEME TIETO METODY ??
-    func createFolder(parentId: String, folderMetadata: Data, completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createFolder(parentId: parentId), data: folderMetadata) { response in
-            completion(response)
-        }
-    }
-    
-    func getFolderContents(parentId: String, completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.getFolderContents(parentId: parentId), data: nil) { response in
-            completion(response)
-        }
+    func uploadKeyShareFile(file: Data?, fileName: String) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.uploadKeyShareFile(fileName: fileName), data: file) { _ in }
     }
 }

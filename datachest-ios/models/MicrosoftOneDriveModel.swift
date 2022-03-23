@@ -12,3 +12,11 @@ struct MicrosoftOneDriveResumableUploadResponse: Codable {
     let expirationDateTime: String
     let nextExpectedRanges: [String]
 }
+
+struct MicrosoftOneDriveFileResponse: Codable {
+    let createdDateTime: String
+    let id: String
+    let lastModifiedDateTime: String
+    let name: String
+    let size: Int
+}

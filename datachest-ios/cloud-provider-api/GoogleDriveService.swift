@@ -17,13 +17,20 @@ class GoogleDriveService {
         }
     }
     
-    func uploadFile(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
+    func uploadFileInChunks(chunk: Data, bytes: String, chunkSize: Int, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(
-            endpoint: GoogleDriveEndpoints.uploadFile(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
+            endpoint: GoogleDriveEndpoints.uploadFileInChunks(resumableURL: resumableURL, chunkSize: chunkSize, bytes: bytes),
             data: chunk
         ) { response in
             completion(response)
         }
+    }
+    
+    func uploadKeyShareFile(file: Data?, resumableURL: String) {
+        NetworkService.shared.request(
+            endpoint: GoogleDriveEndpoints.uploadKeyShareFile(resumableURL: resumableURL, fileSize: file?.count ?? 0),
+            data: file
+        ) { _ in }
     }
     
     func listFiles(q: String, completion: @escaping (NetworkResponse) -> Void) {

@@ -15,6 +15,10 @@ class GoogleDriveFacade {
     private init() {}
 
     func uploadFile(fileUrl: URL) {
+        let gd = GoogleDriveFileUploadSession(fileUrl: fileUrl)
+        gd.createNewUploadSession(destinationFolderName: "Files", fileName: "testname") { resumableURL in
+            gd.uploadFile()
+        }
         activeUploadSessions.append(GoogleDriveFileUploadSession(fileUrl: fileUrl))
     }
 }

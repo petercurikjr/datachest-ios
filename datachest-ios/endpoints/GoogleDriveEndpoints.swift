@@ -8,7 +8,8 @@
 import Foundation
 
 enum GoogleDriveEndpoints: Endpoint {
-    case uploadFile(resumableURL: String, chunkSize: Int, bytes: String)
+    case uploadKeyShareFile(resumableURL: String, fileSize: Int)
+    case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
     case downloadFile
     case listFiles(q: String)
@@ -24,9 +25,11 @@ enum GoogleDriveEndpoints: Endpoint {
     //
     var url: String {
         switch self {
+        case .uploadKeyShareFile(let resumableURL, _):
+            return resumableURL
         case .getResumableUploadURL:
             return baseURLString + "/upload/drive/v3/files?uploadType=resumable"
-        case .uploadFile(let resumableURL, _, _):
+        case .uploadFileInChunks(let resumableURL, _, _):
             return resumableURL
         case .downloadFile:
             return "TODO"
@@ -39,9 +42,11 @@ enum GoogleDriveEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .uploadKeyShareFile:
+            return "PUT"
         case .getResumableUploadURL:
             return "POST"
-        case .uploadFile:
+        case .uploadFileInChunks:
             return "PUT"
         case .downloadFile:
             return "TODO"
@@ -54,10 +59,13 @@ enum GoogleDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
+        case .uploadKeyShareFile(_, let fileSize):
+            return ["Authorization": authorization,
+                    "Content-Length": "\(fileSize)"]
         case .getResumableUploadURL:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
-        case .uploadFile(_, let chunkSize, let bytes):
+        case .uploadFileInChunks(_, let chunkSize, let bytes):
             return ["Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)",
                     "Authorization": authorization]

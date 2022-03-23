@@ -14,6 +14,7 @@
 		BC884191274FF44D00E6E1E2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC884190274FF44D00E6E1E2 /* Preview Assets.xcassets */; };
 		BC8841A2274FF57C00E6E1E2 /* ShamirSecretSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8841A1274FF57C00E6E1E2 /* ShamirSecretSharing.swift */; };
 		BC9C7E8F27E7A94700ECCA44 /* GoogleDriveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9C7E8E27E7A94700ECCA44 /* GoogleDriveModel.swift */; };
+		BC9C7E9227E7F2DC00ECCA44 /* DatachestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9C7E9127E7F2DC00ECCA44 /* DatachestModel.swift */; };
 		BC9E65A527D7B75000A6E99F /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E65A427D7B75000A6E99F /* Endpoint.swift */; };
 		BC9E65A827D7C68F00A6E99F /* SignedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E65A727D7C68F00A6E99F /* SignedUser.swift */; };
 		BC9E65AB27D7C72500A6E99F /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9E65AA27D7C72500A6E99F /* KeychainHelper.swift */; };
@@ -50,6 +51,7 @@
 		BC884192274FF44D00E6E1E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC8841A1274FF57C00E6E1E2 /* ShamirSecretSharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShamirSecretSharing.swift; sourceTree = "<group>"; };
 		BC9C7E8E27E7A94700ECCA44 /* GoogleDriveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveModel.swift; sourceTree = "<group>"; };
+		BC9C7E9127E7F2DC00ECCA44 /* DatachestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestModel.swift; sourceTree = "<group>"; };
 		BC9E65A427D7B75000A6E99F /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		BC9E65A727D7C68F00A6E99F /* SignedUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedUser.swift; sourceTree = "<group>"; };
 		BC9E65AA27D7C72500A6E99F /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				BCBF3A6427DE4EF300566CD7 /* DropboxModel.swift */,
 				BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */,
 				BC9C7E8E27E7A94700ECCA44 /* GoogleDriveModel.swift */,
+				BC9C7E9127E7F2DC00ECCA44 /* DatachestModel.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				BC9E65A827D7C68F00A6E99F /* SignedUser.swift in Sources */,
 				BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */,
 				BCBB66D727C17F0F006DC95A /* DropboxAuthService.swift in Sources */,
+				BC9C7E9227E7F2DC00ECCA44 /* DatachestModel.swift in Sources */,
 				BCBF3A6527DE4EF300566CD7 /* DropboxModel.swift in Sources */,
 				BC88418C274FF44C00E6E1E2 /* ContentView.swift in Sources */,
 				BC9E65A527D7B75000A6E99F /* Endpoint.swift in Sources */,

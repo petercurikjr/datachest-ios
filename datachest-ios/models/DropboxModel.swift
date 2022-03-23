@@ -27,3 +27,9 @@ struct DropboxUploadFileCommit: Codable {
     let mode: String
     let autorename: Bool
 }
+
+struct DropboxFileResponse: Codable {
+    let name: String
+    let id: String
+    let size: Int
+}

@@ -35,9 +35,9 @@ class NetworkService: ObservableObject {
         
         if data != nil {
             let task = URLSession.shared.uploadTask(with: request, from: data!) { data, response, error in
-                let handledResponse = self.handleResponse(data: data, response: response, error: error)
+                let handledResponse = self.handleResponse(endpoint: endpoint, data: data, response: response, error: error)
                 if !handledResponse.hasError {
-                    completion(self.handleResponse(data: data, response: response, error: error))
+                    completion(handledResponse)
                 }
             }
 
@@ -46,9 +46,9 @@ class NetworkService: ObservableObject {
         
         else {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                let handledResponse = self.handleResponse(data: data, response: response, error: error)
+                let handledResponse = self.handleResponse(endpoint: endpoint, data: data, response: response, error: error)
                 if !handledResponse.hasError {
-                    completion(self.handleResponse(data: data, response: response, error: error))
+                    completion(handledResponse)
                 }
             }
 
@@ -56,11 +56,11 @@ class NetworkService: ObservableObject {
         }
     }
     
-    private func handleResponse(data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
+    private func handleResponse(endpoint: Endpoint, data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !((200...299).contains(responseCode) || (responseCode == 308)) || error != nil
         if hasError {
-            print("ERROR", String(data: data!, encoding: .utf8)!)
+            print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint.url, "\nError body:\n", String(data: data!, encoding: .utf8)!)
             DispatchQueue.main.async {
                 self.networkError = NetworkError(error: "Something went wrong when communicating with cloud providers. Please try again later.")
             }

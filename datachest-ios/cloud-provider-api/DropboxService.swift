@@ -17,8 +17,8 @@ class DropboxService {
         }
     }
     
-    func uploadFile(chunk: Data, sessionArg: String, completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadFile(sessionArg: sessionArg), data: chunk) { response in
+    func uploadFileInChunks(chunk: Data, sessionArg: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadFileInChunks(sessionArg: sessionArg), data: chunk) { response in
             completion(response)
         }
     }
@@ -27,5 +27,9 @@ class DropboxService {
         NetworkService.shared.request(endpoint: DropboxEndpoints.finishUploadSession(sessionArg: sessionArg), data: chunk) { response in
             completion(response)
         }
+    }
+    
+    func uploadKeyShareFile(file: Data?, uploadArg: String) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadKeyShareFile(uploadArg: uploadArg), data: file) { _ in }
     }
 }

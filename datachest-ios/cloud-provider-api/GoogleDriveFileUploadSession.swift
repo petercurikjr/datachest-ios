@@ -13,10 +13,13 @@ class GoogleDriveFileUploadSession: FileUploadSession {
     
     init(fileUrl: URL) {
         super.init(fileUrl: fileUrl, bufferSize: 4*262144)
+    }
+    
+    func createNewUploadSession(destinationFolderName: String, fileName: String, completion: @escaping (String?) -> Void) {
         self.getOrCreateFolder(folderName: "Datachest", parentId: nil) { datachestFolderId in
-            self.getOrCreateFolder(folderName: "Files", parentId: datachestFolderId) { filesFolderId in
+            self.getOrCreateFolder(folderName: destinationFolderName, parentId: datachestFolderId) { filesFolderId in
                 let metadata = GoogleDriveCreateItemMetadata(
-                    name: "testfilename",
+                    name: fileName,
                     mimeType: GoogleDriveItemMimeType.file.rawValue,
                     parents: [filesFolderId]
                 )
@@ -26,7 +29,7 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                     GoogleDriveService.shared.getResumableUploadURL(metadata: jsonData) { response in
                         if response.headers != nil {
                             self.sessionId = response.headers!["Location"]
-                            self.upload()
+                            completion(response.headers!["Location"])
                         }
                     }
                 }
@@ -34,25 +37,36 @@ class GoogleDriveFileUploadSession: FileUploadSession {
         }
     }
     
-    private func upload() {
+    func uploadFile() {
         if self.ds != nil && self.sessionId != nil {
             let readStreamBytes = self.ds!.read(self.buffer, maxLength: self.bufferSize)
             if readStreamBytes == 0 { return }
 
             let chunkPtr = Array(UnsafeBufferPointer(start: self.buffer, count: readStreamBytes))
-            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey)
-
+            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey, nonce: self.nonce)
+            self.fileAESTags.append(ciphertextChunk.tag)
+            
             let startRange = self.bytesTransferred
             let endRange = self.bytesTransferred + readStreamBytes - 1
-            GoogleDriveService.shared.uploadFile(
+            GoogleDriveService.shared.uploadFileInChunks(
                 chunk: ciphertextChunk.ciphertext,
                 bytes: "\(startRange)-\(endRange)/\(self.fileSize!)",
                 chunkSize: readStreamBytes,
                 resumableURL: self.sessionId!
-            ) { _ in
+            ) { response in
                 if self.ds!.hasBytesAvailable {
                     self.bytesTransferred += readStreamBytes
-                    self.upload()
+                    self.uploadFile()
+                }
+                if (200...201).contains(response.code) {
+                    guard let fileInfo = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
+                        print("error decoding")
+                        return
+                    }
+                    self.uploadedFileID = fileInfo.id
+                    self.createNewUploadSession(destinationFolderName: "Keys", fileName: self.uploadedFileID) { _ in
+                        self.distributeKeyShares()
+                    }
                 }
             }
         }
