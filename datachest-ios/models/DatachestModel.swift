@@ -25,3 +25,20 @@ enum DatachestSupportedClouds: String {
     
     static let allValues = [microsoft, google, dropbox]
 }
+
+enum DatachestFolders: String {
+    case root = "Datachest"
+    case files = "Files"
+    case keyshareAndMetadata = "Keys"
+    
+    var full: String {
+        switch self {
+        case .root:
+            return "/Datachest"
+        case .files:
+            return "/Datachest/Files"
+        case .keyshareAndMetadata:
+            return "/Datachest/Keys"
+        }
+    }
+}

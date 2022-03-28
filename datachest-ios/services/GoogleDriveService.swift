@@ -33,7 +33,7 @@ class GoogleDriveService {
         ) { _ in }
     }
     
-    func listFiles(q: String, completion: @escaping (NetworkResponse) -> Void) {
+    func listFiles(q: GoogleDriveQuery, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(endpoint: GoogleDriveEndpoints.listFiles(q: q), data: nil) { response in
             completion(response)
         }

@@ -7,11 +7,6 @@
 
 import Foundation
 
-struct NetworkError: Identifiable {
-    let id = UUID().uuidString
-    let error: String
-}
-
 struct NetworkResponse {
     let hasError: Bool
     let data: Data
@@ -22,9 +17,7 @@ struct NetworkResponse {
 class NetworkService: ObservableObject {
     static let shared = NetworkService()
     private init() {}
-    
-    @Published var networkError: NetworkError? = nil
-    
+        
     func request(endpoint: Endpoint, data: Data?, completion: @escaping (NetworkResponse) -> Void) {
         var request = URLRequest(url: URL(string: endpoint.url)!)
         request.httpMethod = endpoint.httpMethod
@@ -60,9 +53,12 @@ class NetworkService: ObservableObject {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !((200...299).contains(responseCode) || (responseCode == 308)) || error != nil
         if hasError {
-            print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint.url, "\nError body:\n", String(data: data!, encoding: .utf8)!)
+            print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint.url, "\nError body:\n")
+            if data != nil {
+                print(data != nil ? String(data: data!, encoding: .utf8)! : "no data")
+            }
             DispatchQueue.main.async {
-                self.networkError = NetworkError(error: "Something went wrong when communicating with cloud providers. Please try again later.")
+                ApplicationStore.shared.state.error = ApplicationError(error: "Something went wrong when communicating with cloud providers. Please try again later.")
             }
         }
         return NetworkResponse(

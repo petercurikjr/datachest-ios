@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-class FileUploadSession {
+class FileUploadSession: CommonCloudContainer {
     let url: URL
     let buffer: UnsafeMutablePointer<UInt8>
     let bufferSize: Int
@@ -51,6 +51,7 @@ class FileUploadSession {
     }
     
     func distributeKeyShares() {
+        // TODO METADATA VLOZIT KU CLOUDU KTORY MA POVODNY SUBOR
         let rand = Int.random(in: 0..<DatachestSupportedClouds.allValues.count)
         let keyShares = self.splitAESKey()
         let rawNonce = self.nonce.withUnsafeBytes { raw in Data(Array(raw)).base64EncodedString() }
@@ -68,7 +69,7 @@ class FileUploadSession {
         }
         
         let gd = GoogleDriveFileUploadSession(fileUrl: self.url)
-        gd.createNewUploadSession(destinationFolderName: "Keys", fileName: self.uploadedFileID) { resumableURL in
+        gd.createNewUploadSession(destinationFolder: .keyshareAndMetadata, fileName: self.uploadedFileID) { resumableURL in
             if resumableURL != nil {
                 GoogleDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[0], resumableURL: resumableURL!)
             }

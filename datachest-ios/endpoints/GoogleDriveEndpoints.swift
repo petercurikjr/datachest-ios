@@ -12,11 +12,15 @@ enum GoogleDriveEndpoints: Endpoint {
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
     case downloadFile
-    case listFiles(q: String)
+    case listFiles(q: GoogleDriveQuery)
     case createFolder
+    case getFileSize(fileId: String)
     //
     private var baseURLString: String {
-        return "https://www.googleapis.com"
+        return "https://www.googleapifs.com"
+    }
+    private var filesURLString: String {
+        return "/drive/v3/files"
     }
     
     private var authorization: String {
@@ -34,9 +38,11 @@ enum GoogleDriveEndpoints: Endpoint {
         case .downloadFile:
             return "TODO"
         case .listFiles(let q):
-            return baseURLString + "/drive/v3/files" + q
+            return baseURLString + filesURLString + q.query
         case .createFolder:
-            return baseURLString + "/drive/v3/files"
+            return baseURLString + filesURLString
+        case .getFileSize(let fileId):
+            return baseURLString + filesURLString + "/\(fileId)?fields=size"
         }
     }
     
@@ -54,6 +60,8 @@ enum GoogleDriveEndpoints: Endpoint {
             return "GET"
         case .createFolder:
             return "POST"
+        case .getFileSize:
+            return "GET"
         }
     }
 
@@ -76,6 +84,8 @@ enum GoogleDriveEndpoints: Endpoint {
         case .createFolder:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
+        case .getFileSize:
+            return ["Authorization": authorization]
         }
     }
 }

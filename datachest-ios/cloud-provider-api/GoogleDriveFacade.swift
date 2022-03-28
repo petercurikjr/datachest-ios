@@ -6,19 +6,24 @@
 //
 
 import Foundation
-import CryptoKit
 
 class GoogleDriveFacade {
     static let shared = GoogleDriveFacade()
+    // toto by malo byt v store
     var activeUploadSessions: [GoogleDriveFileUploadSession] = []
 
     private init() {}
 
     func uploadFile(fileUrl: URL) {
         let gd = GoogleDriveFileUploadSession(fileUrl: fileUrl)
-        gd.createNewUploadSession(destinationFolderName: "Files", fileName: "testname") { resumableURL in
+        gd.createNewUploadSession(destinationFolder: .files, fileName: "testname") { _ in
             gd.uploadFile()
         }
+        // toto nech sa appenduje do storu
         activeUploadSessions.append(GoogleDriveFileUploadSession(fileUrl: fileUrl))
+    }
+    
+    func listFilesOnCloud() {
+        
     }
 }

@@ -14,7 +14,7 @@ struct datachest_iosApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView(selection: 1)
         }
     }
 }
