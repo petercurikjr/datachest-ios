@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @State var selection: Int
-    @ObservedObject var state: ApplicationStore = .shared
+    @ObservedObject var store: ApplicationStore = .shared
     
     var body: some View {
         VStack {
@@ -17,20 +17,20 @@ struct MainView: View {
                 FilesView().tabItem {
                     Image(systemName: "folder")
                     Text("Files")
-                }
+                }.tag(0)
                 
                 UploadView().tabItem {
                     Image(systemName: "arrow.up.circle.fill")
                     Text("Upload")
-                }
+                }.tag(1)
                 
                 ProfileView().tabItem {
                     Image(systemName: "person.fill")
                     Text("Profile")
                 }.tag(2)
             }
-        }.alert(item: $state.state.error) { alert in
-            Alert(title: Text("Error"), message: Text(alert.error), dismissButton: .cancel(Text("Close")))
+        }.alert(item: $store.state.error) { alert in
+            Alert(title: Text("Error"), message: Text(alert.error.rawValue), dismissButton: .cancel(Text("Close")))
         }
     }
 }

@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct FilesView: View {
+    @StateObject private var vm = FilesViewModel()
+    
     var body: some View {
         VStack {
             VStack {
                 Text("Google:")
+                List {
+                    ForEach()
+                }
             }.onAppear {
-                GoogleDriveFacade.shared.listFilesOnCloud()
+                vm.listFilesOnCloud()
             }
             
             VStack {
