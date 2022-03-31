@@ -11,17 +11,14 @@ import Foundation
 class GoogleDriveFileUploadSession: FileUploadSession {
     var bytesTransferred = 0
     
-    init(fileUrl: URL) {
+    init(fileUrl: URL, completion: @escaping (GoogleDriveFileUploadSession) -> Void) {
         super.init(fileUrl: fileUrl, bufferSize: 4*262144)
-        self.googleDriveGetOrCreateFolder(folderName: .root, parentId: nil) { rootId in
-            self.googleDriveGetOrCreateFolder(folderName: .files, parentId: rootId) { _ in }
-            self.googleDriveGetOrCreateFolder(folderName: .keyshareAndMetadata, parentId: rootId) { _ in }
-        }
+        self.googleDriveGetOrCreateAllFolders() { completion(self) }
     }
     
-    func createNewUploadSession(destinationFolder: DatachestFolders, fileName: String, completion: @escaping (String?) -> Void) {
+    func createNewUploadSession(destinationFolder: DatachestFolders, fileName: String?, completion: @escaping (String?) -> Void) {
         let metadata = GoogleDriveCreateItemMetadata(
-            name: fileName,
+            name: fileName == nil ? self.fileName : fileName!,
             mimeType: GoogleDriveItemMimeType.file.rawValue,
             parents: [ApplicationStore.shared.state.googleDriveFolderIds[destinationFolder] ?? ""]
         )
@@ -60,7 +57,9 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                 }
                 if (200...201).contains(response.code) {
                     guard let fileInfo = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
-                        print("error decoding")
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                         return
                     }
                     self.uploadedFileID = fileInfo.id

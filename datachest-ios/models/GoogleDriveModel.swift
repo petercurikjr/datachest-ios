@@ -16,7 +16,11 @@ struct GoogleDriveListFilesResponse: Codable {
     let files: [GoogleDriveFileResponse]
 }
 
-struct GoogleDriveFileResponse: Codable {
+struct GoogleDriveFileSize: Codable {
+    let size: String
+}
+
+struct GoogleDriveFileResponse: Codable, Identifiable {
     let kind: String
     let id: String
     let name: String

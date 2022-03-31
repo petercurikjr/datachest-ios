@@ -15,8 +15,16 @@ struct FilesView: View {
             VStack {
                 Text("Google:")
                 List {
-                    ForEach()
-                }
+                    ForEach(vm.googleDriveFiles) { file in
+                        HStack {
+                            Text(file.name)
+                            Spacer()
+                            Button(action: { vm.downloadFile(fileId: file.id, fileName: file.name) }) {
+                                Image(systemName: "arrow.down.circle").foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }.buttonStyle(BorderlessButtonStyle())
             }.onAppear {
                 vm.listFilesOnCloud()
             }

@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+enum FirestoreCollections: String {
+    case files
+}
+
+struct FirestoreFileDocument: Codable {
+    let googleDriveShare: String
+    let microsoftOneDriveShare: String
+    let dropboxShare: String
+}

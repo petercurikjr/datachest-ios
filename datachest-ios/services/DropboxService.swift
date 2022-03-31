@@ -29,7 +29,15 @@ class DropboxService {
         }
     }
     
-    func uploadKeyShareFile(file: Data?, uploadArg: String) {
-        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadKeyShareFile(uploadArg: uploadArg), data: file) { _ in }
+    func uploadKeyShareFile(file: Data?, uploadArg: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.uploadKeyShareFile(uploadArg: uploadArg), data: file) { response in
+            completion(response)
+        }
+    }
+    
+    func downloadKeyShare(downloadArg: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.download(downloadArg: downloadArg), data: nil) { response in
+            completion(response)
+        }
     }
 }

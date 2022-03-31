@@ -12,7 +12,7 @@ enum DropboxEndpoints: Endpoint {
     case uploadFileInChunks(sessionArg: String)
     case finishUploadSession(sessionArg: String)
     case uploadKeyShareFile(uploadArg: String)
-    case downloadFile
+    case download(downloadArg: String)
     case listFiles
     case listFolders
     //
@@ -34,8 +34,8 @@ enum DropboxEndpoints: Endpoint {
             return baseURLString + "/upload_session/finish"
         case .uploadKeyShareFile:
             return baseURLString + "/upload"
-        case .downloadFile:
-            return "TODO"
+        case .download:
+            return baseURLString + "/download"
         case .listFiles:
             return "TODO"
         case .listFolders:
@@ -53,8 +53,8 @@ enum DropboxEndpoints: Endpoint {
             return "POST"
         case .uploadKeyShareFile:
             return "POST"
-        case .downloadFile:
-            return "TODO"
+        case .download:
+            return "POST"
         case .listFiles:
             return "TODO"
         case .listFolders:
@@ -79,8 +79,9 @@ enum DropboxEndpoints: Endpoint {
             return ["Authorization": authorization,
                     "Dropbox-API-Arg": uploadArg,
                     "Content-Type": "application/octet-stream"]
-        case .downloadFile:
-            return ["Authorization": authorization]
+        case .download(let downloadArg):
+            return ["Authorization": authorization,
+                    "Dropbox-API-Arg": downloadArg]
         case .listFiles:
             return ["Authorization": authorization]
         case .listFolders:

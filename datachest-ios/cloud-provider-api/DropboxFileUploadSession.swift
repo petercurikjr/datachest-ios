@@ -54,14 +54,16 @@ class DropboxFileUploadSession: FileUploadSession {
             else {
                 let sessionArg = DropboxFinishUploadMetadata(
                     cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: self.bytesTransferred),
-                    commit: DropboxUploadFileCommit(path: "/Datachest/Files/filename", mode: "add", autorename: true)
+                    commit: DropboxUploadFileCommit(path: "/Datachest/Files/\(self.fileName)", mode: "add", autorename: true)
                 )
                 
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
                         DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { response in
                             guard let fileInfo = try? JSONDecoder().decode(DropboxFileResponse.self, from: response.data) else {
-                                print("error decoding")
+                                DispatchQueue.main.async {
+                                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                }
                                 return
                             }
                             self.uploadedFileID = String(fileInfo.id.dropFirst(3))

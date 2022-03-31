@@ -12,4 +12,5 @@ target 'datachest-ios' do
   pod 'GoogleAPIClientForREST/Drive'
   pod 'MSAL'
   pod 'SwiftyDropbox'
+  pod 'Firebase/Firestore'
 end

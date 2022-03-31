@@ -14,13 +14,18 @@ class FileUploadSession: CommonCloudContainer {
     let bufferSize: Int
     let aesKey: SymmetricKey
     let nonce: AES.GCM.Nonce
+    let fileExtension: String
+    let fileName: String
     
     var ds: InputStream?
-    var fileSize: Int?
     var sessionId: String?
+    var fileSize: Int?
     
     var fileAESTags: [Data] = []
     var uploadedFileID = ""
+    var uploadedGoogleDriveKeyShareFileId = ""
+    var uploadedMicrosoftOneDriveKeyShareFileId = ""
+    var uploadedDropboxKeyShareFileId = ""
     
     init(fileUrl: URL, bufferSize: Int) {
         self.url = fileUrl
@@ -28,6 +33,8 @@ class FileUploadSession: CommonCloudContainer {
         self.buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: self.bufferSize)
         self.aesKey = SymmetricKey(size: .bits128)
         self.nonce = AES.GCM.Nonce()
+        self.fileName = fileUrl.deletingPathExtension().lastPathComponent
+        self.fileExtension = fileUrl.pathExtension
         
         do {
             let fs = try fileUrl.resourceValues(forKeys: [.fileSizeKey]).fileSize
@@ -38,7 +45,7 @@ class FileUploadSession: CommonCloudContainer {
             }
         }
         catch {
-            print("error while getting file size.")
+            ApplicationStore.shared.uistate.error = ApplicationError(error: .readIO)
         }
     }
     
@@ -60,7 +67,7 @@ class FileUploadSession: CommonCloudContainer {
         
         for i in 0..<DatachestSupportedClouds.allValues.count {
             if i == rand {
-                keyShareFiles.append(DatachestKeyShareFile(keyShare: keyShares[i], mappedFileData: DatachestMappedFileData(fileId: self.uploadedFileID, aesTag: self.fileAESTags, aesNonce: rawNonce)))
+                keyShareFiles.append(DatachestKeyShareFile(keyShare: keyShares[i], mappedFileData: DatachestMappedFileData(fileId: self.uploadedFileID, aesTag: self.fileAESTags, aesNonce: rawNonce, fileType: self.fileExtension)))
             }
             else {
                 keyShareFiles.append(DatachestKeyShareFile(keyShare: keyShares[i], mappedFileData: nil))
@@ -68,20 +75,68 @@ class FileUploadSession: CommonCloudContainer {
             keyShareFilesJson.append(try? JSONEncoder().encode(keyShareFiles[i]))
         }
         
-        let gd = GoogleDriveFileUploadSession(fileUrl: self.url)
-        gd.createNewUploadSession(destinationFolder: .keyshareAndMetadata, fileName: self.uploadedFileID) { resumableURL in
-            if resumableURL != nil {
-                GoogleDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[0], resumableURL: resumableURL!)
-            }
-            else {
-                // err
+        let group = DispatchGroup()
+        group.enter()
+        let _ = GoogleDriveFileUploadSession(fileUrl: self.url) { gd in
+            gd.createNewUploadSession(destinationFolder: .keyshareAndMetadata, fileName: self.uploadedFileID) { resumableURL in
+                if resumableURL != nil {
+                    GoogleDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[0], resumableURL: resumableURL!) { response in
+                        guard let keyShareFile = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
+                            DispatchQueue.main.async {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
+                            return
+                        }
+                        self.uploadedGoogleDriveKeyShareFileId = keyShareFile.id
+                        group.leave()
+                    }
+                }
+                else {
+                    // err
+                }
             }
         }
-        MicrosoftOneDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[1], fileName: self.uploadedFileID)
+        group.enter()
+        MicrosoftOneDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[1], fileName: self.uploadedFileID) { response in
+            guard let keyShareFile = try? JSONDecoder().decode(MicrosoftOneDriveFileResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                }
+                return
+            }
+            self.uploadedMicrosoftOneDriveKeyShareFileId = keyShareFile.id
+            group.leave()
+        }
+        group.enter()
         let uploadArg = DropboxUploadFileCommit(path: "/Datachest/Keys/\(self.uploadedFileID)", mode: "add", autorename: true)
         if let jsonData = try? JSONEncoder().encode(uploadArg) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                DropboxService.shared.uploadKeyShareFile(file: keyShareFilesJson[2], uploadArg: jsonString)
+                DropboxService.shared.uploadKeyShareFile(file: keyShareFilesJson[2], uploadArg: jsonString) { response in
+                    guard let keyShareFile = try? JSONDecoder().decode(DropboxFileResponse.self, from: response.data) else {
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
+                        return
+                    }
+                    self.uploadedDropboxKeyShareFileId = keyShareFile.id
+                    group.leave()
+                }
+            }
+        }
+        
+        group.notify(queue: DispatchQueue.main) {
+            self.writeDocumentToFirestore()
+        }
+    }
+    
+    private func writeDocumentToFirestore() {
+        self.db.collection(FirestoreCollections.files.rawValue).document(self.uploadedFileID).setData([
+            "googleDriveShare": self.uploadedGoogleDriveKeyShareFileId,
+            "microsoftOneDriveShare": self.uploadedMicrosoftOneDriveKeyShareFileId,
+            "dropboxShare": self.uploadedDropboxKeyShareFileId
+        ]) { err in
+            if err != nil {
+                ApplicationStore.shared.uistate.error = ApplicationError(error: .db)
             }
         }
     }

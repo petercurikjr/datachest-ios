@@ -11,13 +11,13 @@ enum GoogleDriveEndpoints: Endpoint {
     case uploadKeyShareFile(resumableURL: String, fileSize: Int)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
-    case downloadFile
+    case download(fileId: String)
     case listFiles(q: GoogleDriveQuery)
     case createFolder
     case getFileSize(fileId: String)
     //
     private var baseURLString: String {
-        return "https://www.googleapifs.com"
+        return "https://www.googleapis.com"
     }
     private var filesURLString: String {
         return "/drive/v3/files"
@@ -35,8 +35,8 @@ enum GoogleDriveEndpoints: Endpoint {
             return baseURLString + "/upload/drive/v3/files?uploadType=resumable"
         case .uploadFileInChunks(let resumableURL, _, _):
             return resumableURL
-        case .downloadFile:
-            return "TODO"
+        case .download(let fileId):
+            return baseURLString + filesURLString + "/\(fileId)?alt=media"
         case .listFiles(let q):
             return baseURLString + filesURLString + q.query
         case .createFolder:
@@ -54,8 +54,8 @@ enum GoogleDriveEndpoints: Endpoint {
             return "POST"
         case .uploadFileInChunks:
             return "PUT"
-        case .downloadFile:
-            return "TODO"
+        case .download:
+            return "GET"
         case .listFiles:
             return "GET"
         case .createFolder:
@@ -77,7 +77,7 @@ enum GoogleDriveEndpoints: Endpoint {
             return ["Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)",
                     "Authorization": authorization]
-        case .downloadFile:
+        case .download:
             return ["Authorization": authorization]
         case .listFiles:
             return ["Authorization": authorization]

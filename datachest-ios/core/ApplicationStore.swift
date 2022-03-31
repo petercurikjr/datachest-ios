@@ -8,21 +8,23 @@
 import Foundation
 import SwiftUI
 
-struct ApplicationError: Identifiable {
-    let id = UUID().uuidString
-    let error: String
-}
-
 struct ApplicationState {
     var googleDriveFolderIds: [DatachestFolders: String]
+}
+
+struct UIState {
     var error: ApplicationError?
 }
 
 final class ApplicationStore: ObservableObject {
     static let shared = ApplicationStore()
     
-    @Published var state = ApplicationState(
+    var state = ApplicationState(
         googleDriveFolderIds: [:]
     )
+    @Published var uistate = UIState(
+        error: nil
+    )
+    
     private init() {}
 }

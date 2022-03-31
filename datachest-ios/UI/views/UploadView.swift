@@ -8,52 +8,32 @@
 import SwiftUI
 
 struct UploadView: View {
-    @State var showDocumentPickerGoogle = false
-    @State var showDocumentPickerDropbox = false
-    @State var showDocumentPickerMicrosoft = false
+    @StateObject private var vm = UploadViewModel()
     
     var body: some View {
         VStack {
             VStack {
-                Button(action: { showDocumentPickerGoogle.toggle() }) {
+                Button(action: { vm.showDocumentPickerGoogle.toggle() }) {
                     Text("Google: Upload a file")
                 }
-            }.fileImporter(isPresented: $showDocumentPickerGoogle, allowedContentTypes: [.text, .pdf]) { res in
-                do {
-                    let fileUrl = try res.get()
-                    GoogleDriveFacade.shared.uploadFile(fileUrl: fileUrl)
-                }
-                catch {
-                    // error
-                }
+            }.fileImporter(isPresented: $vm.showDocumentPickerGoogle, allowedContentTypes: [.text, .pdf]) { res in
+                vm.handleSelectedFile(cloudProvider: .google, result: res)
             }
             
             VStack {
-                Button(action: { showDocumentPickerMicrosoft.toggle() }) {
+                Button(action: { vm.showDocumentPickerMicrosoft.toggle() }) {
                     Text("Microsoft: Upload a file")
                 }
-            }.fileImporter(isPresented: $showDocumentPickerMicrosoft, allowedContentTypes: [.text, .pdf]) { res in
-                do {
-                    let fileUrl = try res.get()
-                    MicrosoftOneDriveFacade.shared.uploadFile(fileUrl: fileUrl)
-                }
-                catch {
-                    // error
-                }
+            }.fileImporter(isPresented: $vm.showDocumentPickerMicrosoft, allowedContentTypes: [.text, .pdf]) { res in
+                vm.handleSelectedFile(cloudProvider: .microsoft, result: res)
             }
             
             VStack {
-                Button(action: { showDocumentPickerDropbox.toggle() }) {
+                Button(action: { vm.showDocumentPickerDropbox.toggle() }) {
                     Text("Dropbox: Upload a file")
                 }
-            }.fileImporter(isPresented: $showDocumentPickerDropbox, allowedContentTypes: [.text, .pdf]) { res in
-                do {
-                    let fileUrl = try res.get()
-                    DropboxFacade.shared.uploadFile(fileUrl: fileUrl)
-                }
-                catch {
-                    // error
-                }
+            }.fileImporter(isPresented: $vm.showDocumentPickerDropbox, allowedContentTypes: [.text, .pdf]) { res in
+                vm.handleSelectedFile(cloudProvider: .dropbox, result: res)
             }
         }
     }

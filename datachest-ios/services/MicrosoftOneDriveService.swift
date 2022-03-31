@@ -26,7 +26,27 @@ class MicrosoftOneDriveService {
         }
     }
     
-    func uploadKeyShareFile(file: Data?, fileName: String) {
-        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.uploadKeyShareFile(fileName: fileName), data: file) { _ in }
+    func uploadKeyShareFile(file: Data?, fileName: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.uploadKeyShareFile(fileName: fileName), data: file) { response in
+            completion(response)
+        }
+    }
+    
+    func createDownloadSession(fileId: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createDownloadSession(fileId: fileId), data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func downloadKeyShare(shareId: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.downloadKeyShare(fileId: shareId), data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func downloadFile(tmpUrl: String, completion: @escaping (DownloadResponse) -> Void) {
+        NetworkService.shared.download(endpoint: MicrosoftOneDriveEndpoints.download(tmpUrl: tmpUrl)) { response in
+            completion(response)
+        }
     }
 }

@@ -11,7 +11,9 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     case createUploadSession(fileName: String)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case uploadKeyShareFile(fileName: String)
-    case downloadFile
+    case createDownloadSession(fileId: String)
+    case download(tmpUrl: String)
+    case downloadKeyShare(fileId: String)
     case createFolder(parentId: String)
     case getFolderContents(parentId: String)
     //
@@ -31,8 +33,12 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return resumableURL
         case .uploadKeyShareFile(let fileName):
             return baseURLString + "/items/root:/Datachest/Keys/\(fileName):/content"
-        case .downloadFile:
-            return "TODO"
+        case .createDownloadSession(let fileId):
+            return baseURLString + "/items/\(fileId)/content"
+        case .download(let tmpUrl):
+            return tmpUrl
+        case .downloadKeyShare(let fileId):
+            return baseURLString + "/items/\(fileId)/content"
         case .createFolder(let parentId):
             return baseURLString + "/items/\(parentId)/children"
         case .getFolderContents(let parentId):
@@ -48,8 +54,12 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return "PUT"
         case .uploadKeyShareFile:
             return "PUT"
-        case .downloadFile:
-            return "TODO"
+        case .createDownloadSession:
+            return "GET"
+        case .download:
+            return "GET"
+        case .downloadKeyShare:
+            return "GET"
         case .createFolder:
             return "POST"
         case .getFolderContents:
@@ -68,7 +78,11 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         case .uploadKeyShareFile:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
-        case .downloadFile:
+        case .createDownloadSession:
+            return ["Authorization": authorization]
+        case .download:
+            return ["Authorization": authorization]
+        case .downloadKeyShare:
             return ["Authorization": authorization]
         case .createFolder:
             return ["Authorization": authorization,

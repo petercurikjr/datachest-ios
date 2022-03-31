@@ -14,10 +14,30 @@ struct NetworkResponse {
     let headers: [String : String]?
 }
 
+struct DownloadResponse {
+    let hasError: Bool
+    let tmpUrl: URL?
+}
+
 class NetworkService: ObservableObject {
     static let shared = NetworkService()
     private init() {}
+    
+    func download(endpoint: Endpoint, completion: @escaping (DownloadResponse) -> Void) {
+        var request = URLRequest(url: URL(string: endpoint.url)!)
+        endpoint.headers.forEach({ header in
+            request.setValue(header.value, forHTTPHeaderField: header.key)
+        })
+        let task = URLSession.shared.downloadTask(with: request) { url, response, error in
+            let handledResponse = self.handleDownloadResponse(url: url, response: response, error: error)
+            if !handledResponse.hasError {
+                completion(handledResponse)
+            }
+        }
         
+        task.resume()
+    }
+    
     func request(endpoint: Endpoint, data: Data?, completion: @escaping (NetworkResponse) -> Void) {
         var request = URLRequest(url: URL(string: endpoint.url)!)
         request.httpMethod = endpoint.httpMethod
@@ -51,14 +71,14 @@ class NetworkService: ObservableObject {
     
     private func handleResponse(endpoint: Endpoint, data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
-        let hasError = !((200...299).contains(responseCode) || (responseCode == 308)) || error != nil
+        let hasError = !(200...399).contains(responseCode) || error != nil
         if hasError {
             print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint.url, "\nError body:\n")
             if data != nil {
                 print(data != nil ? String(data: data!, encoding: .utf8)! : "no data")
             }
             DispatchQueue.main.async {
-                ApplicationStore.shared.state.error = ApplicationError(error: "Something went wrong when communicating with cloud providers. Please try again later.")
+                ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
             }
         }
         return NetworkResponse(
@@ -67,5 +87,16 @@ class NetworkService: ObservableObject {
             code: responseCode,
             headers: (response as? HTTPURLResponse)?.headers.dictionary
         )
+    }
+    
+    private func handleDownloadResponse(url: URL?, response: URLResponse?, error: Error?) -> DownloadResponse {
+        let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
+        let hasError = !(200...399).contains(responseCode) || error != nil
+        if hasError {
+            DispatchQueue.main.async {
+                ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+            }
+        }
+        return DownloadResponse(hasError: hasError, tmpUrl: url)
     }
 }

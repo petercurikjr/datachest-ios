@@ -7,6 +7,20 @@
 
 import Foundation
 
+struct ApplicationError: Identifiable {
+    let id = UUID().uuidString
+    let error: ErrorMessageType
+}
+
+enum ErrorMessageType: String {
+    case db = "There was a problem with the app's database. Please try again later."
+    case network = "Something went wrong when communicating with cloud providers. Please try again later."
+    case dataParsing = "There was a problem parsing some data. Please try again later."
+    case readIO = "An error ocurred while reading from this device's filesystem."
+    case writeIO = "An error ocurred while writing to this device's filesystem."
+    case notEnoughStorageSpace = "Cannot download this file. Insufficient space left on device."
+}
+
 struct DatachestKeyShareFile: Codable {
     let keyShare: String
     let mappedFileData: DatachestMappedFileData?
@@ -16,6 +30,7 @@ struct DatachestMappedFileData: Codable {
     let fileId: String
     let aesTag: [Data]
     let aesNonce: String
+    let fileType: String
 }
 
 enum DatachestSupportedClouds: String {

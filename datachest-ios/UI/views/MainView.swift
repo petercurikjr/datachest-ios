@@ -29,7 +29,7 @@ struct MainView: View {
                     Text("Profile")
                 }.tag(2)
             }
-        }.alert(item: $store.state.error) { alert in
+        }.alert(item: $store.uistate.error) { alert in
             Alert(title: Text("Error"), message: Text(alert.error.rawValue), dismissButton: .cancel(Text("Close")))
         }
     }

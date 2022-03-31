@@ -1,37 +1,33 @@
 //
-//  GoogleDriveFacade.swift
+//  FilesViewModel.swift
 //  datachest-ios
 //
-//  Created by Peter Čuřík Jr. on 08/03/2022.
+//  Created by Peter Čuřík Jr. on 28/03/2022.
 //
 
 import Foundation
 
 extension FilesView {
     class FilesViewModel: ObservableObject {
-        @Published var files: [GoogleDriveFileResponse] = []
+        @Published var googleDriveFiles: [GoogleDriveFileResponse] = []
         
-        func uploadFile(fileUrl: URL) {
-            let _ = GoogleDriveFileUploadSession(fileUrl: fileUrl) { closureGd in
-                closureGd.createNewUploadSession(destinationFolder: .files, fileName: "testname") { _ in
-                    closureGd.uploadFile()
+        func downloadFile(fileId: String, fileName: String) {
+            GoogleDriveFacade.shared.getFileSize(fileId: fileId) { fileSize in
+                guard let availableSpace = DeviceHelper.shared.getAvailableStorageSpace(), fileSize < availableSpace else {
+                    DispatchQueue.main.async {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                    }
+                    return
                 }
+                let gd = GoogleDriveFileDownloadSession(fileId: fileId, fileName: fileName)
+                gd.downloadFile()
             }
         }
         
         func listFilesOnCloud() {
-            let ccd = CommonCloudContainer()
-            ccd.googleDriveGetOrCreateAllFolders() {
-                GoogleDriveService.shared.listFiles(
-                    q: .listItemsInFilesFolder(
-                        folderId: ApplicationStore.shared.state.googleDriveFolderIds[.files] ?? ""
-                    )
-                ) { response in
-                    guard let files = try? JSONDecoder().decode([GoogleDriveFileResponse].self, from: response.data) else {
-                        ApplicationStore.shared.state.error = ApplicationError(error: .dataParsingError)
-                        return
-                    }
-                    self.files = files
+            GoogleDriveFacade.shared.listFilesOnCloud() { files in
+                DispatchQueue.main.async {
+                    self.googleDriveFiles = files
                 }
             }
         }

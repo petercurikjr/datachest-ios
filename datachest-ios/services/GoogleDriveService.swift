@@ -26,11 +26,13 @@ class GoogleDriveService {
         }
     }
     
-    func uploadKeyShareFile(file: Data?, resumableURL: String) {
+    func uploadKeyShareFile(file: Data?, resumableURL: String, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(
             endpoint: GoogleDriveEndpoints.uploadKeyShareFile(resumableURL: resumableURL, fileSize: file?.count ?? 0),
             data: file
-        ) { _ in }
+        ) { response in
+            completion(response)
+        }
     }
     
     func listFiles(q: GoogleDriveQuery, completion: @escaping (NetworkResponse) -> Void) {
@@ -41,6 +43,24 @@ class GoogleDriveService {
     
     func createFolder(metadata: Data, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(endpoint: GoogleDriveEndpoints.createFolder, data: metadata) { response in
+            completion(response)
+        }
+    }
+    
+    func getFileSize(fileId: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.getFileSize(fileId: fileId), data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func downloadKeyShare(shareId: String, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: GoogleDriveEndpoints.download(fileId: shareId), data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func downloadFile(fileId: String, completion: @escaping (DownloadResponse) -> Void) {
+        NetworkService.shared.download(endpoint: GoogleDriveEndpoints.download(fileId: fileId)) { response in
             completion(response)
         }
     }
