@@ -11,11 +11,9 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     case createUploadSession(fileName: String)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case uploadKeyShareFile(fileName: String)
-    case createDownloadSession(fileId: String)
-    case download(tmpUrl: String)
-    case downloadKeyShare(fileId: String)
-    case createFolder(parentId: String)
-    case getFolderContents(parentId: String)
+    case download(fileId: String)
+    case listFiles
+    case createFolder(parentFolder: DatachestFolders?)
     //
     private var baseURLString: String {
         return "https://graph.microsoft.com/v1.0/me/drive"
@@ -28,21 +26,18 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     var url: String {
         switch self {
         case .createUploadSession(let fileName):
-            return baseURLString + "/items/root:/Datachest/Files/\(fileName):/createUploadSession"
+            return baseURLString + "/items/root:\(DatachestFolders.files.full)/\(fileName):/createUploadSession"
         case .uploadFileInChunks(let resumableURL, _, _):
             return resumableURL
         case .uploadKeyShareFile(let fileName):
-            return baseURLString + "/items/root:/Datachest/Keys/\(fileName):/content"
-        case .createDownloadSession(let fileId):
+            return baseURLString + "/items/root:\(DatachestFolders.keyshareAndMetadata.full)/\(fileName):/content"
+        case .download(let fileId):
             return baseURLString + "/items/\(fileId)/content"
-        case .download(let tmpUrl):
-            return tmpUrl
-        case .downloadKeyShare(let fileId):
-            return baseURLString + "/items/\(fileId)/content"
-        case .createFolder(let parentId):
-            return baseURLString + "/items/\(parentId)/children"
-        case .getFolderContents(let parentId):
-            return baseURLString + "/\(parentId)/children"
+        case .listFiles:
+            return baseURLString + "/root:\(DatachestFolders.files.full):/children"
+        case .createFolder(let parentFolder):
+            let pathArg = "/root" + (parentFolder == nil ? "" : ":/") + (parentFolder?.rawValue ?? "") + (parentFolder == nil ? "" : ":")
+            return baseURLString + pathArg + "/children"
         }
     }
     
@@ -54,23 +49,20 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return "PUT"
         case .uploadKeyShareFile:
             return "PUT"
-        case .createDownloadSession:
-            return "GET"
         case .download:
             return "GET"
-        case .downloadKeyShare:
+        case .listFiles:
             return "GET"
         case .createFolder:
             return "POST"
-        case .getFolderContents:
-            return "GET"
         }
     }
 
     var headers: [String: String] {
         switch self {
         case .createUploadSession:
-            return ["Authorization": authorization]
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
         case .uploadFileInChunks(_, let chunkSize, let bytes):
             return ["Authorization": authorization,
                     "Content-Length": "\(chunkSize)",
@@ -78,17 +70,13 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         case .uploadKeyShareFile:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
-        case .createDownloadSession:
-            return ["Authorization": authorization]
         case .download:
             return ["Authorization": authorization]
-        case .downloadKeyShare:
+        case .listFiles:
             return ["Authorization": authorization]
         case .createFolder:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
-        case .getFolderContents:
-            return ["Authorization": authorization]
         }
     }
 }

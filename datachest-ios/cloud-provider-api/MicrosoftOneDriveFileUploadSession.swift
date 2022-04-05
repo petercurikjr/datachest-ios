@@ -12,18 +12,22 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
     var bytesTransferred = 0
     
     init(fileUrl: URL) {
-        super.init(fileUrl: fileUrl, bufferSize: 3*327680)
-        MicrosoftOneDriveService.shared.createUploadSession(fileName: self.fileName, fileMetadata: nil) { response in
-            guard let resumableUploadResponse = try? JSONDecoder().decode(MicrosoftOneDriveResumableUploadResponse.self, from: response.data) else {
-                DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+        super.init(fileUrl: fileUrl, bufferSize: .microsoftOneDrive)
+        let metadata = MicrosoftOneDriveCreateItemRequest(item: MicrosoftOneDriveCreateItem(name: self.fileName, folder: nil, conflictBehavior: "rename"))
+        if let jsonData = try? JSONEncoder().encode(metadata) {
+            MicrosoftOneDriveService.shared.createUploadSession(fileName: self.fileName, fileMetadata: jsonData) { response in
+                guard let resumableUploadResponse = try? JSONDecoder().decode(MicrosoftOneDriveResumableUploadResponse.self, from: response.data) else {
+                    DispatchQueue.main.async {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                    return
                 }
-                return
+                
+                self.sessionId = resumableUploadResponse.uploadUrl
+                self.uploadFile()
             }
-            
-            self.sessionId = resumableUploadResponse.uploadUrl
-            self.uploadFile()
         }
+
     }
     
     private func uploadFile() {
@@ -32,7 +36,7 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
             if readStreamBytes == 0 { return }
             
             let chunkPtr = Array(UnsafeBufferPointer(start: self.buffer, count: readStreamBytes))
-            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey)
+            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey, nonce: self.nonce)
             self.fileAESTags.append(ciphertextChunk.tag)
                         
             let startRange = self.bytesTransferred

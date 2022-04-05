@@ -15,10 +15,10 @@ class FileDownloadSession: CommonCloudContainer {
     
     var shares: [DatachestKeyShareFile] = []
     
-    init(fileId: String, fileName: String, bufferSize: Int) {
+    init(fileId: String, fileName: String, bufferSize: DatachestFileBufferSizes) {
         self.fileId = fileId
         self.fileName = fileName
-        self.bufferSize = bufferSize
+        self.bufferSize = bufferSize.size
     }
     
     func decryptAndSaveFile(fileUrl: URL) {
@@ -45,12 +45,19 @@ class FileDownloadSession: CommonCloudContainer {
             let chunkPtr = Array(UnsafeBufferPointer(start: buffer, count: readStreamBytes))
             if readStreamBytes == 0 { break }
             
-            let sealedBox = try! AES.GCM.SealedBox(nonce: nonce, ciphertext: chunkPtr, tag: tags[i])
-            let plaintextChunk = try! AES.GCM.open(sealedBox, using: aesKey)
-            plaintextChunk.withUnsafeBytes { unsafeBytes in
-                let bytes = unsafeBytes.bindMemory(to: UInt8.self).baseAddress!
-                out.write(bytes, maxLength: readStreamBytes)
-                i += 1
+            do {
+                let sealedBox = try AES.GCM.SealedBox(nonce: nonce, ciphertext: chunkPtr, tag: tags[i])
+                let plaintextChunk = try AES.GCM.open(sealedBox, using: aesKey)
+                plaintextChunk.withUnsafeBytes { unsafeBytes in
+                    let bytes = unsafeBytes.bindMemory(to: UInt8.self).baseAddress!
+                    out.write(bytes, maxLength: readStreamBytes)
+                    i += 1
+                }
+            }
+            catch {
+                DispatchQueue.main.async {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .decryption)
+                }
             }
         }
         inp.close()

@@ -19,6 +19,7 @@ enum ErrorMessageType: String {
     case readIO = "An error ocurred while reading from this device's filesystem."
     case writeIO = "An error ocurred while writing to this device's filesystem."
     case notEnoughStorageSpace = "Cannot download this file. Insufficient space left on device."
+    case decryption = "File decryption failed."
 }
 
 struct DatachestKeyShareFile: Codable {
@@ -54,6 +55,23 @@ enum DatachestFolders: String {
             return "/Datachest/Files"
         case .keyshareAndMetadata:
             return "/Datachest/Keys"
+        }
+    }
+}
+
+enum DatachestFileBufferSizes {
+    case googleDrive
+    case microsoftOneDrive
+    case dropbox
+    
+    var size: Int {
+        switch self {
+        case .googleDrive:
+            return 4*262144
+        case .microsoftOneDrive:
+            return 3*327680
+        case .dropbox:
+            return 4*262144
         }
     }
 }

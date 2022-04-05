@@ -32,20 +32,26 @@ class MicrosoftOneDriveService {
         }
     }
     
-    func createDownloadSession(fileId: String, completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createDownloadSession(fileId: fileId), data: nil) { response in
-            completion(response)
-        }
-    }
-    
     func downloadKeyShare(shareId: String, completion: @escaping (NetworkResponse) -> Void) {
-        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.downloadKeyShare(fileId: shareId), data: nil) { response in
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.download(fileId: shareId), data: nil) { response in
             completion(response)
         }
     }
     
-    func downloadFile(tmpUrl: String, completion: @escaping (DownloadResponse) -> Void) {
-        NetworkService.shared.download(endpoint: MicrosoftOneDriveEndpoints.download(tmpUrl: tmpUrl)) { response in
+    func downloadFile(fileId: String, completion: @escaping (DownloadResponse) -> Void) {
+        NetworkService.shared.download(endpoint: MicrosoftOneDriveEndpoints.download(fileId: fileId)) { response in
+            completion(response)
+        }
+    }
+    
+    func listFiles(completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.listFiles, data: nil) { response in
+            completion(response)
+        }
+    }
+    
+    func createFolder(parentFolder: DatachestFolders?, data: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createFolder(parentFolder: parentFolder), data: data) { response in
             completion(response)
         }
     }

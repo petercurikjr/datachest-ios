@@ -14,6 +14,69 @@ class CommonCloudContainer {
     init() {
         self.db = Firestore.firestore()
     }
+        
+    func googleDriveGetOrCreateAllFolders(completion: @escaping () -> Void) {
+        self.googleDriveGetOrCreateFolder(folderName: .root, parentId: nil) { rootId in
+            let group = DispatchGroup()
+            group.enter()
+            self.googleDriveGetOrCreateFolder(folderName: .files, parentId: rootId) { _ in
+                group.leave()
+            }
+            group.enter()
+            self.googleDriveGetOrCreateFolder(folderName: .keyshareAndMetadata, parentId: rootId) { _ in
+                group.leave()
+            }
+            
+            group.notify(queue: DispatchQueue.main) {
+                completion()
+            }
+        }
+    }
+    
+    func microsoftOneDriveCheckOrCreateAllFolders(completion: @escaping () -> Void) {
+        self.microsoftOneDriveCheckOrCreateFolder(
+            metadata: MicrosoftOneDriveCreateItem(
+                name: DatachestFolders.root.rawValue,
+                folder: MicrosoftOneDriveEmptyObject(),
+                conflictBehavior: "replace"
+            ),
+            parentFolder: nil
+        ) {
+            let group = DispatchGroup()
+            group.enter()
+            self.microsoftOneDriveCheckOrCreateFolder(
+                metadata: MicrosoftOneDriveCreateItem(
+                    name: DatachestFolders.files.rawValue,
+                    folder: MicrosoftOneDriveEmptyObject(),
+                    conflictBehavior: "replace"
+                ),
+                parentFolder: .root
+            ) { group.leave() }
+            group.enter()
+            self.microsoftOneDriveCheckOrCreateFolder(
+                metadata: MicrosoftOneDriveCreateItem(
+                    name: DatachestFolders.keyshareAndMetadata.rawValue,
+                    folder: MicrosoftOneDriveEmptyObject(),
+                    conflictBehavior: "replace"
+                ),
+                parentFolder: .root
+            ) { group.leave() }
+            
+            group.notify(queue: DispatchQueue.main) {
+                completion()
+            }
+        }
+    }
+    
+    private func microsoftOneDriveCheckOrCreateFolder(metadata: MicrosoftOneDriveCreateItem, parentFolder: DatachestFolders?, completion: @escaping () -> Void) {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .withoutEscapingSlashes
+        if let jsonData = try? jsonEncoder.encode(metadata) {
+            MicrosoftOneDriveService.shared.createFolder(parentFolder: parentFolder, data: jsonData) { _ in
+                completion()
+            }
+        }
+    }
     
     private func googleDriveGetOrCreateFolder(folderName: DatachestFolders, parentId: String?, completion: @escaping (String) -> Void) {
         if ApplicationStore.shared.state.googleDriveFolderIds[folderName] != nil {
@@ -58,24 +121,6 @@ class CommonCloudContainer {
                         }
                     }
                 }
-            }
-        }
-    }
-        
-    func googleDriveGetOrCreateAllFolders(completion: @escaping () -> Void) {
-        self.googleDriveGetOrCreateFolder(folderName: .root, parentId: nil) { rootId in
-            let group = DispatchGroup()
-            group.enter()
-            self.googleDriveGetOrCreateFolder(folderName: .files, parentId: rootId) { _ in
-                group.leave()
-            }
-            group.enter()
-            self.googleDriveGetOrCreateFolder(folderName: .keyshareAndMetadata, parentId: rootId) { _ in
-                group.leave()
-            }
-            
-            group.notify(queue: DispatchQueue.main) {
-                completion()
             }
         }
     }

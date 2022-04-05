@@ -19,27 +19,34 @@ struct FilesView: View {
                         HStack {
                             Text(file.name)
                             Spacer()
-                            Button(action: { vm.downloadFile(fileId: file.id, fileName: file.name) }) {
+                            Button(action: { vm.googleDriveDownloadFile(file: file) }) {
                                 Image(systemName: "arrow.down.circle").foregroundColor(.blue)
                             }
                         }
                     }
                 }.buttonStyle(BorderlessButtonStyle())
-            }.onAppear {
-                vm.listFilesOnCloud()
             }
             
             VStack {
                 Text("Microsoft:")
-            }.onAppear {
-                //
+                List {
+                    ForEach(vm.microsoftOneDriveFiles) { file in
+                        HStack {
+                            Text(file.name)
+                            Spacer()
+                            Button(action: { vm.microsoftOneDriveDownloadFile(file: file) }) {
+                                Image(systemName: "arrow.down.circle").foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }.buttonStyle(BorderlessButtonStyle())
             }
             
             VStack {
                 Text("Dropbox:")
-            }.onAppear {
-                //
             }
+        }.onAppear {
+            vm.listFilesOnCloud()
         }
     }
 }

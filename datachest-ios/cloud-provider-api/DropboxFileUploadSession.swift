@@ -13,7 +13,7 @@ class DropboxFileUploadSession: FileUploadSession {
     var finishUpload = false
     
     init(fileUrl: URL) {
-        super.init(fileUrl: fileUrl, bufferSize: 4*262144)
+        super.init(fileUrl: fileUrl, bufferSize: .dropbox)
         DropboxService.shared.startUploadSession { response in
             let jsonRawObject = try? JSONSerialization.jsonObject(with: response.data, options: [])
             if let dictionary = jsonRawObject as? [String: Any] {

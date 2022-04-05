@@ -12,7 +12,7 @@ class GoogleDriveFileUploadSession: FileUploadSession {
     var bytesTransferred = 0
     
     init(fileUrl: URL, completion: @escaping (GoogleDriveFileUploadSession) -> Void) {
-        super.init(fileUrl: fileUrl, bufferSize: 4*262144)
+        super.init(fileUrl: fileUrl, bufferSize: .googleDrive)
         self.googleDriveGetOrCreateAllFolders() { completion(self) }
     }
     

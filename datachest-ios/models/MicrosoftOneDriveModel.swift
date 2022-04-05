@@ -13,10 +13,32 @@ struct MicrosoftOneDriveResumableUploadResponse: Codable {
     let nextExpectedRanges: [String]
 }
 
-struct MicrosoftOneDriveFileResponse: Codable {
+struct MicrosoftOneDriveFileResponse: Codable, Identifiable {
     let createdDateTime: String
     let id: String
     let lastModifiedDateTime: String
     let name: String
     let size: Int
 }
+
+struct MicrosoftOneDriveFilesResponse: Codable {
+    let value: [MicrosoftOneDriveFileResponse]
+}
+
+struct MicrosoftOneDriveCreateItemRequest: Codable {
+    let item: MicrosoftOneDriveCreateItem
+}
+
+struct MicrosoftOneDriveCreateItem: Codable {
+    let name: String?
+    let folder: MicrosoftOneDriveEmptyObject?
+    let conflictBehavior: String
+    
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case folder
+        case conflictBehavior = "@microsoft.graph.conflictBehavior"
+    }
+}
+
+struct MicrosoftOneDriveEmptyObject: Codable {}

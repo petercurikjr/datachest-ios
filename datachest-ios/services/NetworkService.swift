@@ -39,7 +39,7 @@ class NetworkService: ObservableObject {
     }
     
     func request(endpoint: Endpoint, data: Data?, completion: @escaping (NetworkResponse) -> Void) {
-        var request = URLRequest(url: URL(string: endpoint.url)!)
+        var request = URLRequest(url: URL(string: endpoint.url.replacingOccurrences(of: " ", with: "%20"))!)
         request.httpMethod = endpoint.httpMethod
         endpoint.headers.forEach({ header in
             request.setValue(header.value, forHTTPHeaderField: header.key)
@@ -48,7 +48,7 @@ class NetworkService: ObservableObject {
         
         if data != nil {
             let task = URLSession.shared.uploadTask(with: request, from: data!) { data, response, error in
-                let handledResponse = self.handleResponse(endpoint: endpoint, data: data, response: response, error: error)
+                let handledResponse = self.handleResponse(endpoint: request.url?.absoluteString ?? "no url", data: data, response: response, error: error)
                 if !handledResponse.hasError {
                     completion(handledResponse)
                 }
@@ -59,7 +59,7 @@ class NetworkService: ObservableObject {
         
         else {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                let handledResponse = self.handleResponse(endpoint: endpoint, data: data, response: response, error: error)
+                let handledResponse = self.handleResponse(endpoint: request.url?.absoluteString ?? "no url", data: data, response: response, error: error)
                 if !handledResponse.hasError {
                     completion(handledResponse)
                 }
@@ -69,11 +69,11 @@ class NetworkService: ObservableObject {
         }
     }
     
-    private func handleResponse(endpoint: Endpoint, data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
+    private func handleResponse(endpoint: String, data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !(200...399).contains(responseCode) || error != nil
         if hasError {
-            print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint.url, "\nError body:\n")
+            print("ERROR", responseCode, ":\n", "\tEndpoint:", endpoint, "\nError body:\n")
             if data != nil {
                 print(data != nil ? String(data: data!, encoding: .utf8)! : "no data")
             }

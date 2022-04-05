@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import CryptoKit
 
 class GoogleDriveFileDownloadSession: FileDownloadSession {
     var bytesDownloaded = 0
     
     init(fileId: String, fileName: String) {
-        super.init(fileId: fileId, fileName: fileName, bufferSize: 4*262144)
+        super.init(fileId: fileId, fileName: fileName, bufferSize: .googleDrive)
     }
     
     func downloadFile() {

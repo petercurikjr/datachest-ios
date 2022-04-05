@@ -27,9 +27,9 @@ class FileUploadSession: CommonCloudContainer {
     var uploadedMicrosoftOneDriveKeyShareFileId = ""
     var uploadedDropboxKeyShareFileId = ""
     
-    init(fileUrl: URL, bufferSize: Int) {
+    init(fileUrl: URL, bufferSize: DatachestFileBufferSizes) {
         self.url = fileUrl
-        self.bufferSize = bufferSize
+        self.bufferSize = bufferSize.size
         self.buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: self.bufferSize)
         self.aesKey = SymmetricKey(size: .bits128)
         self.nonce = AES.GCM.Nonce()
