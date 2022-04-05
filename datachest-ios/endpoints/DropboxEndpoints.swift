@@ -14,10 +14,13 @@ enum DropboxEndpoints: Endpoint {
     case uploadKeyShareFile(uploadArg: String)
     case download(downloadArg: String)
     case listFiles
-    case listFolders
+    case createFolder
     //
-    private var baseURLString: String {
+    private var contentBaseURLString: String {
         return "https://content.dropboxapi.com/2/files"
+    }
+    private var apiBaseURLString: String {
+        return "https://api.dropboxapi.com/2/files"
     }
     
     private var authorization: String {
@@ -27,19 +30,19 @@ enum DropboxEndpoints: Endpoint {
     var url: String {
         switch self {
         case .startUploadSession:
-            return baseURLString + "/upload_session/start"
+            return contentBaseURLString + "/upload_session/start"
         case .uploadFileInChunks:
-            return baseURLString + "/upload_session/append_v2"
+            return contentBaseURLString + "/upload_session/append_v2"
         case .finishUploadSession:
-            return baseURLString + "/upload_session/finish"
+            return contentBaseURLString + "/upload_session/finish"
         case .uploadKeyShareFile:
-            return baseURLString + "/upload"
+            return contentBaseURLString + "/upload"
         case .download:
-            return baseURLString + "/download"
+            return contentBaseURLString + "/download"
         case .listFiles:
-            return "TODO"
-        case .listFolders:
-            return "TODO"
+            return apiBaseURLString + "/list_folder"
+        case .createFolder:
+            return apiBaseURLString + "/create_folder_v2"
         }
     }
     
@@ -56,9 +59,9 @@ enum DropboxEndpoints: Endpoint {
         case .download:
             return "POST"
         case .listFiles:
-            return "TODO"
-        case .listFolders:
-            return "TODO"
+            return "POST"
+        case .createFolder:
+            return "POST"
         }
     }
 
@@ -83,9 +86,11 @@ enum DropboxEndpoints: Endpoint {
             return ["Authorization": authorization,
                     "Dropbox-API-Arg": downloadArg]
         case .listFiles:
-            return ["Authorization": authorization]
-        case .listFolders:
-            return ["Authorization": authorization]
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
+        case .createFolder:
+            return ["Authorization": authorization,
+                    "Content-Type": "application/json"]
         }
     }
 }

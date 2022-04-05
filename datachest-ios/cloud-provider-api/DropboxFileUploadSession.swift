@@ -31,7 +31,8 @@ class DropboxFileUploadSession: FileUploadSession {
             if readStreamBytes < bufferSize { self.finishUpload = true }
             
             let chunkPtr = Array(UnsafeBufferPointer(start: self.buffer, count: readStreamBytes))
-            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey)
+            let ciphertextChunk = try! AES.GCM.seal(Data(chunkPtr), using: self.aesKey, nonce: self.nonce)
+            self.fileAESTags.append(ciphertextChunk.tag)
             
             if !finishUpload {
                 let sessionArg = DropboxUploadFileMetadata(
@@ -54,7 +55,7 @@ class DropboxFileUploadSession: FileUploadSession {
             else {
                 let sessionArg = DropboxFinishUploadMetadata(
                     cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: self.bytesTransferred),
-                    commit: DropboxUploadFileCommit(path: "/Datachest/Files/\(self.fileName)", mode: "add", autorename: true)
+                    commit: DropboxCreateItemCommit(path: "\(DatachestFolders.files.full)/\(self.fileName)", mode: "add", autorename: true)
                 )
                 
                 if let jsonData = try? JSONEncoder().encode(sessionArg) {

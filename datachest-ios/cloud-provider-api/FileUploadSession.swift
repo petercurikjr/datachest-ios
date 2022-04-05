@@ -108,7 +108,7 @@ class FileUploadSession: CommonCloudContainer {
             group.leave()
         }
         group.enter()
-        let uploadArg = DropboxUploadFileCommit(path: "/Datachest/Keys/\(self.uploadedFileID)", mode: "add", autorename: true)
+        let uploadArg = DropboxCreateItemCommit(path: "\(DatachestFolders.keyshareAndMetadata.full)/\(self.uploadedFileID)", mode: "add", autorename: true)
         if let jsonData = try? JSONEncoder().encode(uploadArg) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 DropboxService.shared.uploadKeyShareFile(file: keyShareFilesJson[2], uploadArg: jsonString) { response in
@@ -130,7 +130,7 @@ class FileUploadSession: CommonCloudContainer {
     }
     
     private func writeDocumentToFirestore() {
-        self.db.collection(FirestoreCollections.files.rawValue).document(self.uploadedFileID).setData([
+        self.db.collection(FirestoreCollections.files.rawValue).document("id:" + self.uploadedFileID).setData([
             "googleDriveShare": self.uploadedGoogleDriveKeyShareFileId,
             "microsoftOneDriveShare": self.uploadedMicrosoftOneDriveKeyShareFileId,
             "dropboxShare": self.uploadedDropboxKeyShareFileId

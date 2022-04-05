@@ -16,7 +16,7 @@ class CommonCloudContainer {
     }
         
     func googleDriveGetOrCreateAllFolders(completion: @escaping () -> Void) {
-        self.googleDriveGetOrCreateFolder(folderName: .root, parentId: nil) { rootId in
+        self.googleDriveGetOrCreateFolder(folderName: .datachest, parentId: nil) { rootId in
             let group = DispatchGroup()
             group.enter()
             self.googleDriveGetOrCreateFolder(folderName: .files, parentId: rootId) { _ in
@@ -36,7 +36,7 @@ class CommonCloudContainer {
     func microsoftOneDriveCheckOrCreateAllFolders(completion: @escaping () -> Void) {
         self.microsoftOneDriveCheckOrCreateFolder(
             metadata: MicrosoftOneDriveCreateItem(
-                name: DatachestFolders.root.rawValue,
+                name: DatachestFolders.datachest.rawValue,
                 folder: MicrosoftOneDriveEmptyObject(),
                 conflictBehavior: "replace"
             ),
@@ -50,7 +50,7 @@ class CommonCloudContainer {
                     folder: MicrosoftOneDriveEmptyObject(),
                     conflictBehavior: "replace"
                 ),
-                parentFolder: .root
+                parentFolder: .datachest
             ) { group.leave() }
             group.enter()
             self.microsoftOneDriveCheckOrCreateFolder(
@@ -59,10 +59,47 @@ class CommonCloudContainer {
                     folder: MicrosoftOneDriveEmptyObject(),
                     conflictBehavior: "replace"
                 ),
-                parentFolder: .root
+                parentFolder: .datachest
             ) { group.leave() }
             
             group.notify(queue: DispatchQueue.main) {
+                completion()
+            }
+        }
+    }
+    
+    func dropboxCheckOrCreateAllFolders(completion: @escaping () -> Void) {
+        if let json = try? JSONEncoder().encode(DropboxListFilesRequest(path: DatachestFolders.root.rawValue, include_deleted: false)) {
+            DropboxService.shared.listFiles(dataArg: json) { response in
+                guard let items = try? JSONDecoder().decode(DropboxListFilesResponse.self, from: response.data) else {
+                    DispatchQueue.main.async {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                    return
+                }
+                if items.entries.contains(where: { item in item.name == DatachestFolders.datachest.rawValue }) {
+                    completion()
+                }
+                else {
+                    let group = DispatchGroup()
+                    group.enter()
+                    self.dropboxCheckOrCreateFolder(dataArg: DropboxCreateItemCommit(path: DatachestFolders.files.full, mode: nil, autorename: nil)) { group.leave() }
+                    group.enter()
+                    self.dropboxCheckOrCreateFolder(dataArg: DropboxCreateItemCommit(path: DatachestFolders.keyshareAndMetadata.full, mode: nil, autorename: nil)) { group.leave() }
+                    
+                    group.notify(queue: DispatchQueue.main) {
+                        completion()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func dropboxCheckOrCreateFolder(dataArg: DropboxCreateItemCommit, completion: @escaping () -> Void) {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .withoutEscapingSlashes
+        if let jsonData = try? jsonEncoder.encode(dataArg) {
+            DropboxService.shared.createFolder(dataArg: jsonData) { _ in
                 completion()
             }
         }

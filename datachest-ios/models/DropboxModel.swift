@@ -14,7 +14,7 @@ struct DropboxUploadFileMetadata: Codable {
 
 struct DropboxFinishUploadMetadata: Codable {
     let cursor: DropboxUploadFileCursor
-    let commit: DropboxUploadFileCommit
+    let commit: DropboxCreateItemCommit
 }
 
 struct DropboxUploadFileCursor: Codable {
@@ -22,18 +22,29 @@ struct DropboxUploadFileCursor: Codable {
     let offset: Int
 }
 
-struct DropboxUploadFileCommit: Codable {
+struct DropboxCreateItemCommit: Codable {
     let path: String
-    let mode: String
-    let autorename: Bool
+    let mode: String?
+    let autorename: Bool?
 }
 
 struct DropboxDownloadFileMetadata: Codable {
     let path: String
 }
 
-struct DropboxFileResponse: Codable {
+struct DropboxFileResponse: Codable, Identifiable {
     let name: String
     let id: String
-    let size: Int
+    let size: Int?
+}
+
+struct DropboxListFilesRequest: Codable {
+    let path: String
+    let include_deleted: Bool
+}
+
+struct DropboxListFilesResponse: Codable {
+    let entries: [DropboxFileResponse]
+    let cursor: String
+    let has_more: Bool
 }

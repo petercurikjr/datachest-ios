@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8874458ED03EA2C502219A70 /* Pods_datachest_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3E352177E478A37BF0A1612 /* Pods_datachest_ios.framework */; };
 		BC0C23EC27F2781A00093020 /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0C23EB27F2781A00093020 /* DeviceHelper.swift */; };
+		BC3A0E6E27FCF37F004E67B2 /* DropboxFileDownloadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3A0E6D27FCF37F004E67B2 /* DropboxFileDownloadSession.swift */; };
 		BC88418A274FF44C00E6E1E2 /* datachest_iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC884189274FF44C00E6E1E2 /* datachest_iosApp.swift */; };
 		BC88418C274FF44C00E6E1E2 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC88418B274FF44C00E6E1E2 /* ProfileView.swift */; };
 		BC88418E274FF44D00E6E1E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC88418D274FF44D00E6E1E2 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		8221AF8B4D1DCE04AD81D5B1 /* Pods-datachest-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-datachest-ios.release.xcconfig"; path = "Target Support Files/Pods-datachest-ios/Pods-datachest-ios.release.xcconfig"; sourceTree = "<group>"; };
 		BC0C23EB27F2781A00093020 /* DeviceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHelper.swift; sourceTree = "<group>"; };
+		BC3A0E6D27FCF37F004E67B2 /* DropboxFileDownloadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropboxFileDownloadSession.swift; sourceTree = "<group>"; };
 		BC884186274FF44C00E6E1E2 /* datachest-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "datachest-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC884189274FF44C00E6E1E2 /* datachest_iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = datachest_iosApp.swift; sourceTree = "<group>"; };
 		BC88418B274FF44C00E6E1E2 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				BCEC97A727DDD8B1007416F5 /* FileUploadSession.swift */,
 				BCABF2B527EDFE6B00617E9F /* FileDownloadSession.swift */,
 				BCABF2B927EE02BA00617E9F /* CommonCloudContainer.swift */,
+				BC3A0E6D27FCF37F004E67B2 /* DropboxFileDownloadSession.swift */,
 			);
 			path = "cloud-provider-api";
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 				BC0C23EC27F2781A00093020 /* DeviceHelper.swift in Sources */,
 				BCBC6C3E27D7F22D00E16BA2 /* FilesViewModel.swift in Sources */,
 				BC88418A274FF44C00E6E1E2 /* datachest_iosApp.swift in Sources */,
+				BC3A0E6E27FCF37F004E67B2 /* DropboxFileDownloadSession.swift in Sources */,
 				BCA768F127E1B7DB002F0817 /* MicrosoftOneDriveModel.swift in Sources */,
 				BCFBCA0D27C10929000DF554 /* MicrosoftAuthService.swift in Sources */,
 				BCA4F8D227F3B55200FBF046 /* FirestoreModel.swift in Sources */,

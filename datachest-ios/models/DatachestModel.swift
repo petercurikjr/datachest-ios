@@ -43,13 +43,16 @@ enum DatachestSupportedClouds: String {
 }
 
 enum DatachestFolders: String {
-    case root = "Datachest"
+    case root = ""
+    case datachest = "Datachest"
     case files = "Files"
     case keyshareAndMetadata = "Keys"
     
     var full: String {
         switch self {
         case .root:
+            return "/"
+        case .datachest:
             return "/Datachest"
         case .files:
             return "/Datachest/Files"

@@ -40,4 +40,22 @@ class DropboxService {
             completion(response)
         }
     }
+    
+    func downloadFile(downloadArg: String, completion: @escaping (DownloadResponse) -> Void) {
+        NetworkService.shared.download(endpoint: DropboxEndpoints.download(downloadArg: downloadArg)) { response in
+            completion(response)
+        }
+    }
+    
+    func listFiles(dataArg: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.listFiles, data: dataArg) { response in
+            completion(response)
+        }
+    }
+    
+    func createFolder(dataArg: Data, completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.createFolder, data: dataArg) { response in
+            completion(response)
+        }
+    }
 }

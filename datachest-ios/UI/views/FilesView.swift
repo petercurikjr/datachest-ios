@@ -44,6 +44,17 @@ struct FilesView: View {
             
             VStack {
                 Text("Dropbox:")
+                List {
+                    ForEach(vm.dropboxFiles) { file in
+                        HStack {
+                            Text(file.name)
+                            Spacer()
+                            Button(action: { vm.dropboxDownloadFile(file: file) }) {
+                                Image(systemName: "arrow.down.circle").foregroundColor(.blue)
+                            }
+                        }
+                    }
+                }.buttonStyle(BorderlessButtonStyle())
             }
         }.onAppear {
             vm.listFilesOnCloud()
