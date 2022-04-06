@@ -57,16 +57,14 @@ class FileUploadSession: CommonCloudContainer {
         return ShamirSecretSharingService.shared.split(secretInput: keyb64)
     }
     
-    func distributeKeyShares() {
-        // TODO METADATA VLOZIT KU CLOUDU KTORY MA POVODNY SUBOR
-        let rand = Int.random(in: 0..<DatachestSupportedClouds.allValues.count)
+    func distributeKeyShares(fileOwningCloud: DatachestSupportedClouds) {
         let keyShares = self.splitAESKey()
         let rawNonce = self.nonce.withUnsafeBytes { raw in Data(Array(raw)).base64EncodedString() }
         var keyShareFiles: [DatachestKeyShareFile] = []
         var keyShareFilesJson: [Data?] = []
         
         for i in 0..<DatachestSupportedClouds.allValues.count {
-            if i == rand {
+            if DatachestSupportedClouds.allValues[i] == fileOwningCloud {
                 keyShareFiles.append(DatachestKeyShareFile(keyShare: keyShares[i], mappedFileData: DatachestMappedFileData(fileId: self.uploadedFileID, aesTag: self.fileAESTags, aesNonce: rawNonce, fileType: self.fileExtension)))
             }
             else {
@@ -125,12 +123,12 @@ class FileUploadSession: CommonCloudContainer {
         }
         
         group.notify(queue: DispatchQueue.main) {
-            self.writeDocumentToFirestore()
+            self.writeDocumentToFirestore(documentName: (fileOwningCloud == .dropbox ? "id:" : "") + self.uploadedFileID)
         }
     }
     
-    private func writeDocumentToFirestore() {
-        self.db.collection(FirestoreCollections.files.rawValue).document("id:" + self.uploadedFileID).setData([
+    private func writeDocumentToFirestore(documentName: String) {
+        self.db.collection(FirestoreCollections.files.rawValue).document(documentName).setData([
             "googleDriveShare": self.uploadedGoogleDriveKeyShareFileId,
             "microsoftOneDriveShare": self.uploadedMicrosoftOneDriveKeyShareFileId,
             "dropboxShare": self.uploadedDropboxKeyShareFileId

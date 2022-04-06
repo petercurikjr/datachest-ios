@@ -59,7 +59,7 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
                         return
                     }
                     self.uploadedFileID = fileInfo.id
-                    self.distributeKeyShares()
+                    self.distributeKeyShares(fileOwningCloud: .microsoft)
                 }
             }
         }

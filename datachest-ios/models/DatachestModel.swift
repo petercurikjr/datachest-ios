@@ -35,11 +35,11 @@ struct DatachestMappedFileData: Codable {
 }
 
 enum DatachestSupportedClouds: String {
-    case microsoft = "Microsoft OneDrive"
     case google = "Google Drive"
+    case microsoft = "Microsoft OneDrive"
     case dropbox = "Dropbox"
     
-    static let allValues = [microsoft, google, dropbox]
+    static let allValues = [google, microsoft, dropbox]
 }
 
 enum DatachestFolders: String {

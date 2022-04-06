@@ -68,7 +68,7 @@ class DropboxFileUploadSession: FileUploadSession {
                                 return
                             }
                             self.uploadedFileID = String(fileInfo.id.dropFirst(3))
-                            self.distributeKeyShares()
+                            self.distributeKeyShares(fileOwningCloud: .dropbox)
                         }
                     }
                 }

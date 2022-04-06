@@ -64,7 +64,7 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                     }
                     self.uploadedFileID = fileInfo.id
                     self.createNewUploadSession(destinationFolder: .keyshareAndMetadata, fileName: self.uploadedFileID) { _ in
-                        self.distributeKeyShares()
+                        self.distributeKeyShares(fileOwningCloud: .google)
                     }
                 }
             }
