@@ -13,7 +13,6 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
             if let authResult = $0 {
                 switch authResult {
                   case .success(let token):
-                    print("DROPBOX signed in.", token.accessToken)
                     self.handleToken(token)
                   case .cancel:
                     print("Authorization flow was manually canceled by user!")
@@ -36,6 +35,7 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "dropbox")
             }
             SignedUser.shared.dropboxAccessToken = token.accessToken
+            print("DROPBOX signed in.", token.accessToken)
         }
     }
 }

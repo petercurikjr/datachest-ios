@@ -34,7 +34,6 @@ class MicrosoftAuthService {
         let interactiveParameters = MSALInteractiveTokenParameters(scopes: ["User.Read", "Files.ReadWrite"], webviewParameters: webViewParameters)
         
         application?.acquireToken(with: interactiveParameters) { result, error in
-            print("MICROSOFT signed in.", (result?.accessToken) ?? "no token")
             self.handleUser(result)
             self.signedInAccount = result?.account
         }
@@ -65,6 +64,7 @@ class MicrosoftAuthService {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "microsoft")
             }
             SignedUser.shared.microsoftAccessToken = user.accessToken
+            print("MICROSOFT signed in.", (result?.accessToken) ?? "no token")
         }
     }
     
