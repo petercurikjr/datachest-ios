@@ -30,13 +30,12 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
     }
     
     private func handleToken(_ token: DropboxAccessToken?) {
-        guard token != nil else {
-            return
+        if let token = token {
+            let keychainItem = DatachestDropboxAuthKeychainItem(accessTokenExpirationDate: Date().addingTimeInterval(TimeInterval(14400)))
+            if let jsonData = try? JSONEncoder().encode(keychainItem) {
+                KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "dropbox")
+            }
+            SignedUser.shared.dropboxAccessToken = token.accessToken
         }
-        
-        let accessToken = token!.accessToken
-        
-        KeychainHelper.shared.saveToKeychain(string: accessToken, service: "access-token", account: "dropbox")
-        SignedUser.shared.dropboxAccessToken = accessToken
     }
 }

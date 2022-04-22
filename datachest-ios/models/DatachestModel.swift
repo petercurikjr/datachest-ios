@@ -34,6 +34,19 @@ struct DatachestMappedFileData: Codable {
     let fileType: String
 }
 
+struct DatachestGoogleAuthKeychainItem: Codable {
+    let accessTokenExpirationDate: Date
+}
+
+struct DatachestMicrosoftAuthKeychainItem: Codable {
+    let accessTokenExpirationDate: Date
+    let accountId: String
+}
+
+struct DatachestDropboxAuthKeychainItem: Codable {
+    let accessTokenExpirationDate: Date
+}
+
 enum DatachestSupportedClouds: String {
     case google = "Google Drive"
     case microsoft = "Microsoft OneDrive"

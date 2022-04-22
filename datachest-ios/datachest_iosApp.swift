@@ -15,6 +15,9 @@ struct datachest_iosApp: App {
     
     init() {
         FirebaseApp.configure()
+        GoogleAuthService.shared.signInGoogleSilently()
+        MicrosoftAuthService.shared.signInMicrosoftSilently()
+        DropboxAuthService.shared.signInDropboxSilently()
     }
     
     var body: some Scene {

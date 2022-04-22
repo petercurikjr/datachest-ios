@@ -59,13 +59,28 @@ class MicrosoftAuthService {
     }
     
     private func handleUser(_ user: MSALResult?) {
-        guard user != nil else {
-            return
+        if let user = user, let expireDate = user.expiresOn, let id = user.account.identifier {
+            let keychainItem = DatachestMicrosoftAuthKeychainItem(accessTokenExpirationDate: expireDate, accountId: id)
+            if let jsonData = try? JSONEncoder().encode(keychainItem) {
+                KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "microsoft")
+            }
+            SignedUser.shared.microsoftAccessToken = user.accessToken
         }
-        
-        let accessToken = user!.accessToken
-        
-        KeychainHelper.shared.saveToKeychain(string: accessToken, service: "access-token", account: "microsoft")
-        SignedUser.shared.microsoftAccessToken = accessToken
+    }
+    
+    // access token platnost 1 hodina
+    // ak sa nepodari ziskat token silently, setnut do storu flag ktory bude v UI indikovat ze sa treba prihlasit
+    func signInMicrosoftSilently() {
+        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
+           let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
+            guard let account = try? application?.account(forIdentifier: object.accountId) else { // ak toto zlyha, treba dat v ui dat vediet ze sa treba prihlasit
+                print("couldnt sign in silently to Microsoft")
+                return
+            }
+            let silentParameters = MSALSilentTokenParameters(scopes: ["User.Read", "Files.ReadWrite"], account: account)
+            application?.acquireTokenSilent(with: silentParameters) { result, error in
+                self.handleUser(result)
+            }
+        }
     }
 }
