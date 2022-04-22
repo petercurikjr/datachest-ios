@@ -63,8 +63,8 @@ class MicrosoftAuthService {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "microsoft")
             }
-            SignedUser.shared.microsoftAccessToken = user.accessToken
-            print("MICROSOFT signed in.", (result?.accessToken) ?? "no token")
+            ApplicationStore.shared.state.microsoftAccessToken = user.accessToken
+            print("MICROSOFT signed in.", (user.accessToken))
         }
     }
     

@@ -23,7 +23,6 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         
         for context in URLContexts {
-            // stop iterating after the first handle-able url
             if DropboxClientsManager.handleRedirectURL(context.url, completion: oauthCompletion) { break }
         }
     }
@@ -34,7 +33,7 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "dropbox")
             }
-            SignedUser.shared.dropboxAccessToken = token.accessToken
+            ApplicationStore.shared.state.dropboxAccessToken = token.accessToken
             print("DROPBOX signed in.", token.accessToken)
         }
     }

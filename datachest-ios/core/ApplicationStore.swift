@@ -10,6 +10,9 @@ import SwiftUI
 
 struct ApplicationState {
     var googleDriveFolderIds: [DatachestFolders: String]
+    var googleAccessToken: String
+    var microsoftAccessToken: String
+    var dropboxAccessToken: String
 }
 
 struct UIState {
@@ -20,7 +23,10 @@ final class ApplicationStore: ObservableObject {
     static let shared = ApplicationStore()
     
     var state = ApplicationState(
-        googleDriveFolderIds: [:]
+        googleDriveFolderIds: [:],
+        googleAccessToken: "",
+        microsoftAccessToken: "",
+        dropboxAccessToken: ""
     )
     @Published var uistate = UIState(
         error: nil

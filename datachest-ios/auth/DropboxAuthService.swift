@@ -38,7 +38,7 @@ class DropboxAuthService {
                 }
             }
             
-            SignedUser.shared.dropboxAccessToken = accessTokenProvider.accessToken
+            ApplicationStore.shared.state.dropboxAccessToken = accessTokenProvider.accessToken
         }
     }
     

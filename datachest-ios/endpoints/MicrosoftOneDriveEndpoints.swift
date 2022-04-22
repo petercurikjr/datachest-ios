@@ -20,7 +20,7 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     }
     
     private var authorization: String {
-        return "Bearer \(SignedUser.shared.microsoftAccessToken)"
+        return "Bearer " + self.getAccessToken()
     }
     //
     var url: String {
@@ -78,6 +78,19 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]
         }
+    }
+    
+    private func getAccessToken() -> String {
+        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
+           let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
+            let dateNow = Date()
+            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
+            if diffMinutes < 5 {
+                MicrosoftAuthService.shared.signInMicrosoftSilently()
+            }
+        }
+        
+        return ApplicationStore.shared.state.microsoftAccessToken
     }
 }
 

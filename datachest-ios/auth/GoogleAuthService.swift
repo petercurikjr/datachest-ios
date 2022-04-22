@@ -38,7 +38,7 @@ class GoogleAuthService {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "google")
             }
-            SignedUser.shared.googleAccessToken = user.authentication.accessToken
+            ApplicationStore.shared.state.googleAccessToken = user.authentication.accessToken
         }
     }
     
