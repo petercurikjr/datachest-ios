@@ -11,9 +11,9 @@ class KeychainHelper {
     static let shared = KeychainHelper()
     private init() {}
     
-    func saveToKeychain(string: String, service: String, account: String) {
+    func saveToKeychain(value: Data, service: String, account: String) {
         let query = [
-            kSecValueData: Data(string.utf8),
+            kSecValueData: value,
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: account,
@@ -27,7 +27,7 @@ class KeychainHelper {
                 kSecAttrAccount: account,
             ] as CFDictionary
             
-            let attributesToUpdate = [kSecValueData: Data(string.utf8)] as CFDictionary
+            let attributesToUpdate = [kSecValueData: value] as CFDictionary
             SecItemUpdate(query, attributesToUpdate)
         }
         else if status != errSecSuccess {
@@ -35,7 +35,7 @@ class KeychainHelper {
         }
     }
     
-    func loadFromKeychain(service: String, account: String) -> String? {
+    func loadFromKeychain(service: String, account: String) -> Data? {
         let query = [
             kSecAttrService: service,
             kSecAttrAccount: account,
@@ -46,6 +46,6 @@ class KeychainHelper {
         var result: AnyObject?
         SecItemCopyMatching(query, &result)
         
-        return String(describing: result)
+        return result as? Data
     }
 }

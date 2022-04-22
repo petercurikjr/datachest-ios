@@ -24,7 +24,7 @@ enum GoogleDriveEndpoints: Endpoint {
     }
     
     private var authorization: String {
-        return "Bearer \(SignedUser.shared.googleAccessToken)"
+        return "Bearer " + self.getAccessToken()
     }
     //
     var url: String {
@@ -87,5 +87,18 @@ enum GoogleDriveEndpoints: Endpoint {
         case .getFileSize:
             return ["Authorization": authorization]
         }
+    }
+    
+    private func getAccessToken() -> String {
+        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "google"),
+           let object = try? JSONDecoder().decode(DatachestGoogleAuthKeychainItem.self, from: keychainItem) {
+            let dateNow = Date()
+            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
+            if diffMinutes < 5 {
+                GoogleAuthService.shared.signInGoogleSilently()
+            }
+        }
+        
+        return ApplicationStore.shared.state.googleAccessToken
     }
 }
