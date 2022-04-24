@@ -29,6 +29,7 @@
 		BCA4F8D227F3B55200FBF046 /* FirestoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA4F8D127F3B55200FBF046 /* FirestoreModel.swift */; };
 		BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA5182027CA854100D98A49 /* GoogleDriveService.swift */; };
 		BCA768F127E1B7DB002F0817 /* MicrosoftOneDriveModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */; };
+		BCA79AF02813FA7200821BE2 /* AppStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA79AEF2813FA7200821BE2 /* AppStartView.swift */; };
 		BCAB051527C2A97500E7323A /* DatachestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */; };
 		BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */; };
 		BCABF2B327EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABF2B227EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift */; };
@@ -79,6 +80,7 @@
 		BCA4F8D127F3B55200FBF046 /* FirestoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreModel.swift; sourceTree = "<group>"; };
 		BCA5182027CA854100D98A49 /* GoogleDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveService.swift; sourceTree = "<group>"; };
 		BCA768F027E1B7DB002F0817 /* MicrosoftOneDriveModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveModel.swift; sourceTree = "<group>"; };
+		BCA79AEF2813FA7200821BE2 /* AppStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartView.swift; sourceTree = "<group>"; };
 		BCAB051427C2A97500E7323A /* DatachestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestAppDelegate.swift; sourceTree = "<group>"; };
 		BCAB051727C2AE5800E7323A /* DatachestSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatachestSceneDelegate.swift; sourceTree = "<group>"; };
 		BCABF2B227EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveFileDownloadSession.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				BCA3933D27F20710006B2A94 /* FilesView.swift */,
 				BCA3934027F2071D006B2A94 /* UploadView.swift */,
 				BC88418B274FF44C00E6E1E2 /* ProfileView.swift */,
+				BCA79AEF2813FA7200821BE2 /* AppStartView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */,
 				BCBF3A5D27DE3B1500566CD7 /* NetworkService.swift in Sources */,
 				BCC1F97227F5F602008E9E38 /* MicrosoftOneDriveFileDownloadSession.swift in Sources */,
+				BCA79AF02813FA7200821BE2 /* AppStartView.swift in Sources */,
 				BCEC97A827DDD8B1007416F5 /* FileUploadSession.swift in Sources */,
 				BCAB051827C2AE5800E7323A /* DatachestSceneDelegate.swift in Sources */,
 				BCABF2B327EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift in Sources */,

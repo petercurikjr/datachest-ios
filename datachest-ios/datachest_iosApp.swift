@@ -20,9 +20,23 @@ struct datachest_iosApp: App {
         DropboxAuthService.shared.signInDropboxSilently()
     }
     
+    @ObservedObject var store = ApplicationStore.shared
+    
     var body: some Scene {
         WindowGroup {
-            MainView(selection: 1)
+            VStack {
+                if store.signedInAll != nil {
+                    if store.signedInAll! {
+                        MainView(selection: 0)
+                    }
+                    else {
+                        ProfileView()
+                    }
+                }
+                else {
+                    AppStartView()
+                }
+            }
         }
     }
 }

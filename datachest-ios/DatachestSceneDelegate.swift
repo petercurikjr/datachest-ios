@@ -33,7 +33,9 @@ class DatachestSceneDelegate: NSObject, UIWindowSceneDelegate {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "dropbox")
             }
-            ApplicationStore.shared.state.dropboxAccessToken = token.accessToken
+            
+            ApplicationStore.shared.setDropboxAccessToken(token: token.accessToken)
+            UserDefaults.standard.setValue(false, forKey: "signed-out-dropbox")
             print("DROPBOX signed in.", token.accessToken)
         }
     }

@@ -84,8 +84,9 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
         if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
            let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
             let dateNow = Date()
-            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
-            if diffMinutes < 5 {
+            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
+            print("mictoken", diffMinutes)
+            if diffMinutes < 3 {
                 MicrosoftAuthService.shared.signInMicrosoftSilently()
             }
         }

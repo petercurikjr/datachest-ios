@@ -93,8 +93,9 @@ enum GoogleDriveEndpoints: Endpoint {
         if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "google"),
            let object = try? JSONDecoder().decode(DatachestGoogleAuthKeychainItem.self, from: keychainItem) {
             let dateNow = Date()
-            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
-            if diffMinutes < 5 {
+            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
+            print("googletoken", diffMinutes)
+            if diffMinutes < 3 {
                 GoogleAuthService.shared.signInGoogleSilently()
             }
         }

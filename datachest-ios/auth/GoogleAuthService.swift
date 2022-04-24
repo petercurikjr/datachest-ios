@@ -21,7 +21,7 @@ class GoogleAuthService {
         guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
 
         GIDSignIn.sharedInstance.signIn(with: self.config, presenting: rootViewController) { user, error in
-            print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
+            print("GOOGLE signed in.", (user?.authentication.accessToken) ?? "no token", (user?.grantedScopes) ?? "no scopes")
             GIDSignIn.sharedInstance.addScopes(["https://www.googleapis.com/auth/drive"], presenting: rootViewController, callback: { _, _ in })
             self.handleUser(user)
         }
@@ -29,6 +29,8 @@ class GoogleAuthService {
     
     func signOutGoogle() {
         GIDSignIn.sharedInstance.signOut()
+        ApplicationStore.shared.uistate.signedInGoogle = false
+        UserDefaults.standard.setValue(true, forKey: "signed-out-google")
         print("GOOGLE signed out.")
     }
     
@@ -38,23 +40,21 @@ class GoogleAuthService {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "google")
             }
-            ApplicationStore.shared.state.googleAccessToken = user.authentication.accessToken
+            
+            ApplicationStore.shared.setGoogleAccessToken(token: user.authentication.accessToken)
+            UserDefaults.standard.setValue(false, forKey: "signed-out-google")
         }
     }
     
-    // toto staci zavolat na refresh tokenu
-    // google drzi access token po dobu 1 hodiny
-    // do keychainu treba ulozit user!.authentication.accessTokenExpirationDate
-    // a checkovat expirationDate pred kazdym API volanim. ak bude token uz presne pred expiraciou, zavolaj tuto metodu
-    // pozor. token ktory nie je tesne pred vyprsanim/vyprsany nebude googlom obnoveny
-    
-    // ak sa nepodari ziskat token silently, setnut do storu flag ktory bude v UI indikovat ze sa treba prihlasit
     func signInGoogleSilently() {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                 print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
                 self.handleUser(user)
             }
+        }
+        else {
+            ApplicationStore.shared.uistate.signedInGoogle = false
         }
     }
 }

@@ -95,15 +95,10 @@ enum DropboxEndpoints: Endpoint {
     }
     
     private func getAccessToken() -> String {
-        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-itemf", account: "dropbox"),
-           let object = try? JSONDecoder().decode(DatachestDropboxAuthKeychainItem.self, from: keychainItem) {
-            let dateNow = Date()
-            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
-            if diffMinutes < 5 {
-                DropboxAuthService.shared.signInDropboxSilently()
-            }
+        if !DropboxAuthService.shared.isTokenValid() {
+            DropboxAuthService.shared.signInDropboxSilently()
         }
-        
+
         return ApplicationStore.shared.state.dropboxAccessToken
     }
 }

@@ -99,8 +99,10 @@ class CommonCloudContainer {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .withoutEscapingSlashes
         if let jsonData = try? jsonEncoder.encode(dataArg) {
-            DropboxService.shared.createFolder(dataArg: jsonData) { _ in
-                completion()
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 0...2)) {
+                DropboxService.shared.createFolder(dataArg: jsonData) { _ in
+                    completion()
+                }
             }
         }
     }

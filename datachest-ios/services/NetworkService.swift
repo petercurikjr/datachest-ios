@@ -24,14 +24,21 @@ class NetworkService: ObservableObject {
     private init() {}
     
     func download(endpoint: Endpoint, completion: @escaping (DownloadResponse) -> Void) {
-        var request = URLRequest(url: URL(string: endpoint.url)!)
-        endpoint.headers.forEach({ header in
-            request.setValue(header.value, forHTTPHeaderField: header.key)
-        })
-        let task = URLSession.shared.downloadTask(with: request) { url, response, error in
-            let handledResponse = self.handleDownloadResponse(url: url, response: response, error: error)
+        let task = URLSession.shared.downloadTask(with: self.constructNewRequest(endpoint: endpoint, data: nil)) { url, response, error in
+            let handledResponse = self.handleDownloadResponse(url: url, response: response, error: error, silentError: true)
             if !handledResponse.hasError {
                 completion(handledResponse)
+            }
+            // repeat failed request one more time
+            else {
+                let repeatTask = URLSession.shared.downloadTask(with: self.constructNewRequest(endpoint: endpoint, data: nil)) { url, response, error in
+                    let handledResponse = self.handleDownloadResponse(url: url, response: response, error: error, silentError: false)
+                    if !handledResponse.hasError {
+                        completion(handledResponse)
+                    }
+                }
+                
+                repeatTask.resume()
             }
         }
         
@@ -39,18 +46,22 @@ class NetworkService: ObservableObject {
     }
     
     func request(endpoint: Endpoint, data: Data?, completion: @escaping (NetworkResponse) -> Void) {
-        var request = URLRequest(url: URL(string: endpoint.url.replacingOccurrences(of: " ", with: "%20"))!)
-        request.httpMethod = endpoint.httpMethod
-        endpoint.headers.forEach({ header in
-            request.setValue(header.value, forHTTPHeaderField: header.key)
-        })
-        request.httpBody = data
-        
         if data != nil {
-            let task = URLSession.shared.uploadTask(with: request, from: data!) { data, response, error in
-                let handledResponse = self.handleResponse(endpoint: request.url?.absoluteString ?? "no url", data: data, response: response, error: error)
+            let task = URLSession.shared.uploadTask(with: self.constructNewRequest(endpoint: endpoint, data: data), from: data!) { data, response, error in
+                let handledResponse = self.handleResponse(endpoint: endpoint.url, data: data, response: response, error: error, silentError: true)
                 if !handledResponse.hasError {
                     completion(handledResponse)
+                }
+                // repeat failed request one more time
+                else {
+                    let repeatTask = URLSession.shared.uploadTask(with: self.constructNewRequest(endpoint: endpoint, data: data), from: data!) { data, response, error in
+                        let handledResponse = self.handleResponse(endpoint: endpoint.url, data: data, response: response, error: error, silentError: false)
+                        if !handledResponse.hasError {
+                            completion(handledResponse)
+                        }
+                    }
+                    
+                    repeatTask.resume()
                 }
             }
 
@@ -58,10 +69,21 @@ class NetworkService: ObservableObject {
         }
         
         else {
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                let handledResponse = self.handleResponse(endpoint: request.url?.absoluteString ?? "no url", data: data, response: response, error: error)
+            let task = URLSession.shared.dataTask(with: self.constructNewRequest(endpoint: endpoint, data: nil)) { data, response, error in
+                let handledResponse = self.handleResponse(endpoint: endpoint.url, data: data, response: response, error: error, silentError: true)
                 if !handledResponse.hasError {
                     completion(handledResponse)
+                }
+                // repeat failed request one more time
+                else {
+                    let repeatTask = URLSession.shared.dataTask(with: self.constructNewRequest(endpoint: endpoint, data: nil)) { data, response, error in
+                        let handledResponse = self.handleResponse(endpoint: endpoint.url, data: data, response: response, error: error, silentError: false)
+                        if !handledResponse.hasError {
+                            completion(handledResponse)
+                        }
+                    }
+                    
+                    repeatTask.resume()
                 }
             }
 
@@ -69,7 +91,7 @@ class NetworkService: ObservableObject {
         }
     }
     
-    private func handleResponse(endpoint: String, data: Data?, response: URLResponse?, error: Error?) -> NetworkResponse {
+    private func handleResponse(endpoint: String, data: Data?, response: URLResponse?, error: Error?, silentError: Bool) -> NetworkResponse {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !(200...399).contains(responseCode) || error != nil
         if hasError {
@@ -77,8 +99,10 @@ class NetworkService: ObservableObject {
             if data != nil {
                 print(data != nil ? String(data: data!, encoding: .utf8)! : "no data")
             }
-            DispatchQueue.main.async {
-                ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+            if !silentError {
+                DispatchQueue.main.async {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+                }
             }
         }
         return NetworkResponse(
@@ -89,14 +113,28 @@ class NetworkService: ObservableObject {
         )
     }
     
-    private func handleDownloadResponse(url: URL?, response: URLResponse?, error: Error?) -> DownloadResponse {
+    private func handleDownloadResponse(url: URL?, response: URLResponse?, error: Error?, silentError: Bool) -> DownloadResponse {
         let responseCode = (response as? HTTPURLResponse)?.statusCode ?? 404
         let hasError = !(200...399).contains(responseCode) || error != nil
-        if hasError {
+        if hasError && !silentError {
             DispatchQueue.main.async {
                 ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
             }
         }
         return DownloadResponse(hasError: hasError, tmpUrl: url)
+    }
+    
+    private func constructNewRequest(endpoint: Endpoint, data: Data?) -> URLRequest {
+        var request = URLRequest(url: URL(string: endpoint.url.replacingOccurrences(of: " ", with: "%20"))!)
+        request.httpMethod = endpoint.httpMethod
+        endpoint.headers.forEach({ header in
+            request.setValue(header.value, forHTTPHeaderField: header.key)
+        })
+        
+        if data != nil {
+            request.httpBody = data
+        }
+        
+        return request
     }
 }
