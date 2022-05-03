@@ -7,6 +7,15 @@
 
 import Foundation
 
+struct DropboxCurrentAccountResponse: Codable {
+    let name: DropboxName
+}
+
+struct DropboxName: Codable {
+    let given_name: String
+    let surname: String
+}
+
 struct DropboxSpaceUsageResponse: Codable {
     let allocation: DropboxSpaceAllocation
     let used: Int64

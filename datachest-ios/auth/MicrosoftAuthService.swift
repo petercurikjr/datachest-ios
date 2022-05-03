@@ -35,7 +35,6 @@ class MicrosoftAuthService {
         
         application?.acquireToken(with: interactiveParameters) { result, error in
             self.handleUser(result)
-            self.signedInAccount = result?.account
         }
     }
     
@@ -46,7 +45,10 @@ class MicrosoftAuthService {
         let webViewParameters = MSALWebviewParameters(authPresentationViewController: rootViewController)
         let signOutParameters = MSALSignoutParameters(webviewParameters: webViewParameters)
         
-        guard let accountToSignOut = self.signedInAccount else { return }
+        guard let accountToSignOut = self.signedInAccount else {
+            print("MICROSOFT no account to sign out. aborting")
+            return
+        }
         application?.signout(with: accountToSignOut, signoutParameters: signOutParameters) { success, error in
             if let error = error {
                 print(error)
@@ -68,6 +70,7 @@ class MicrosoftAuthService {
             
             ApplicationStore.shared.setMicrosoftAccessToken(token: user.accessToken)
             UserDefaults.standard.setValue(false, forKey: "signed-out-microsoft")
+            self.signedInAccount = user.account
             print("MICROSOFT signed in.", (user.accessToken))
         }
     }

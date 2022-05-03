@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AppStartView: View {
     var body: some View {
-        Text("Starting the application...")
+        ProgressView().padding(5)
+        Text("Starting the application...").font(.title3)
     }
 }
 

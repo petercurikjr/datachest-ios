@@ -13,6 +13,8 @@ struct UploadView: View {
     var body: some View {
         NavigationView {
             VStack {
+                Spacer()
+                Spacer()
                 HStack(alignment: .top) {
                     VStack {
                         Image("google-drive")
@@ -39,7 +41,8 @@ struct UploadView: View {
                         }.opacity(self.vm.isUnlimitedStorageGoogle ? 0 : 100)
                         Text(self.vm.remainingSizeGoogle + " available")
                     }.padding(.top, 7)
-                }.padding(.vertical, 30).padding(.trailing, 30)
+                }.padding(.trailing, 30)
+                Spacer()
                 HStack(alignment: .top) {
                     VStack {
                         Image("microsoft-onedrive")
@@ -66,7 +69,8 @@ struct UploadView: View {
                         }
                         Text(self.vm.remainingSizeMicrosoft + " available")
                     }.padding(.top, 7)
-                }.padding(.vertical, 30).padding(.trailing, 30)
+                }.padding(.trailing, 30)
+                Spacer()
                 HStack(alignment: .top) {
                     VStack {
                         Image("dropbox")
@@ -94,12 +98,15 @@ struct UploadView: View {
 
                         Text(self.vm.remainingSizeDropbox + " available")
                     }.padding(.top, 7)
-                }.padding(.vertical, 30).padding(.trailing, 30)
+                }.padding(.trailing, 30)
+                Spacer()
+                Spacer()
+                Spacer()
             }.navigationTitle("Upload your files")
             .onAppear {
                 self.vm.getCloudQuotas()
             }
-        }.padding(.bottom, 30)
+        }
     }
 }
 

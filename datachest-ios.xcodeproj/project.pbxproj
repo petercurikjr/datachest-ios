@@ -35,6 +35,8 @@
 		BCABF2B327EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABF2B227EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift */; };
 		BCABF2B627EDFE6B00617E9F /* FileDownloadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABF2B527EDFE6B00617E9F /* FileDownloadSession.swift */; };
 		BCABF2BA27EE02BA00617E9F /* CommonCloudContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABF2B927EE02BA00617E9F /* CommonCloudContainer.swift */; };
+		BCAD21BD2821D693009BF3B5 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD21BC2821D693009BF3B5 /* ProfileViewModel.swift */; };
+		BCAD21C02821DA13009BF3B5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD21BF2821DA13009BF3B5 /* LoginView.swift */; };
 		BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */; };
 		BCAD586627DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */; };
 		BCAD586927DFA9AF005C4B59 /* MicrosoftOneDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */; };
@@ -87,6 +89,8 @@
 		BCABF2B227EDFE4000617E9F /* GoogleDriveFileDownloadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveFileDownloadSession.swift; sourceTree = "<group>"; };
 		BCABF2B527EDFE6B00617E9F /* FileDownloadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadSession.swift; sourceTree = "<group>"; };
 		BCABF2B927EE02BA00617E9F /* CommonCloudContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonCloudContainer.swift; sourceTree = "<group>"; };
+		BCAD21BC2821D693009BF3B5 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		BCAD21BF2821DA13009BF3B5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFacade.swift; sourceTree = "<group>"; };
 		BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFileUploadSession.swift; sourceTree = "<group>"; };
 		BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveService.swift; sourceTree = "<group>"; };
@@ -204,6 +208,7 @@
 			children = (
 				BCBC6C3D27D7F22D00E16BA2 /* FilesViewModel.swift */,
 				BCA3934C27F25E65006B2A94 /* UploadViewModel.swift */,
+				BCAD21BC2821D693009BF3B5 /* ProfileViewModel.swift */,
 			);
 			path = viewmodels;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 				BCA3934027F2071D006B2A94 /* UploadView.swift */,
 				BC88418B274FF44C00E6E1E2 /* ProfileView.swift */,
 				BCA79AEF2813FA7200821BE2 /* AppStartView.swift */,
+				BCAD21BF2821DA13009BF3B5 /* LoginView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -410,6 +416,7 @@
 				BCBF3A5A27DE3AA600566CD7 /* DropboxService.swift in Sources */,
 				BCA3934827F25D2B006B2A94 /* GoogleDriveFacade.swift in Sources */,
 				BCEC97A227DDD817007416F5 /* DropboxFacade.swift in Sources */,
+				BCAD21C02821DA13009BF3B5 /* LoginView.swift in Sources */,
 				BCEC97A527DDD84E007416F5 /* DropboxFileUploadSession.swift in Sources */,
 				BCAD586927DFA9AF005C4B59 /* MicrosoftOneDriveService.swift in Sources */,
 				BCA5182127CA854100D98A49 /* GoogleDriveService.swift in Sources */,
@@ -425,6 +432,7 @@
 				BCBF3A6127DE3DC400566CD7 /* DropboxEndpoints.swift in Sources */,
 				BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */,
 				BCBF3A5D27DE3B1500566CD7 /* NetworkService.swift in Sources */,
+				BCAD21BD2821D693009BF3B5 /* ProfileViewModel.swift in Sources */,
 				BCC1F97227F5F602008E9E38 /* MicrosoftOneDriveFileDownloadSession.swift in Sources */,
 				BCA79AF02813FA7200821BE2 /* AppStartView.swift in Sources */,
 				BCEC97A827DDD8B1007416F5 /* FileUploadSession.swift in Sources */,

@@ -21,11 +21,12 @@ class DropboxAuthService {
         DropboxClientsManager.authorizeFromControllerV2(UIApplication.shared, controller: rootViewController, loadingStatusDelegate: nil, openURL: { _ in }, scopeRequest: scopeRequest)
     }
         
-    func signInDropboxSilently() {
+    func signInDropboxSilently(completion: @escaping () -> ()) {
         if let accessTokenProvider = DropboxClientsManager.authorizedClient?.auth.client.accessTokenProvider {
             if self.isTokenValid() {
                 ApplicationStore.shared.setDropboxAccessToken(token: accessTokenProvider.accessToken)
                 print("DROPBOX signed in.", accessTokenProvider.accessToken)
+                completion()
             }
             
             else {
@@ -40,6 +41,7 @@ class DropboxAuthService {
                         
                         ApplicationStore.shared.setDropboxAccessToken(token: token.accessToken)
                         UserDefaults.standard.setValue(false, forKey: "signed-out-dropbox")
+                        completion()
                     case .error(_, _): break
                     case .cancel: break
                     case .none: break

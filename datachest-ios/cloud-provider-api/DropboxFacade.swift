@@ -12,6 +12,20 @@ class DropboxFacade {
 
     private init() {}
 
+    func getCurrentAccount(completion: @escaping (DropboxCurrentAccountResponse) -> Void) {
+        DropboxService.shared.getCurrentAccount { response in
+            guard let account = try? JSONDecoder().decode(DropboxCurrentAccountResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                }
+                return
+            }
+            completion(account)
+        }
+    }
+    
     func getSpaceUsage(completion: @escaping (DropboxSpaceUsageResponse) -> Void) {
         DropboxService.shared.getSpaceUsage { response in
             guard let spaceUsage = try? JSONDecoder().decode(DropboxSpaceUsageResponse.self, from: response.data) else {

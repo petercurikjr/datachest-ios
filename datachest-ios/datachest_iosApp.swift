@@ -17,7 +17,7 @@ struct datachest_iosApp: App {
         FirebaseApp.configure()
         GoogleAuthService.shared.signInGoogleSilently()
         MicrosoftAuthService.shared.signInMicrosoftSilently()
-        DropboxAuthService.shared.signInDropboxSilently()
+        DropboxAuthService.shared.signInDropboxSilently {}
     }
     
     @ObservedObject var store = ApplicationStore.shared
@@ -30,7 +30,7 @@ struct datachest_iosApp: App {
                         MainView(selection: 0)
                     }
                     else {
-                        ProfileView()
+                        LoginView()
                     }
                 }
                 else {
