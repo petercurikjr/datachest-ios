@@ -56,7 +56,9 @@ class FileDownloadSession: CommonCloudContainer {
             }
             catch {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .decryption)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .decryption)
+                    }
                 }
             }
         }
@@ -107,7 +109,9 @@ class FileDownloadSession: CommonCloudContainer {
             GoogleDriveService.shared.downloadKeyShare(shareId: sharesIds[0]) { response in
                 guard let share = try? JSONDecoder().decode(DatachestKeyShareFile.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
@@ -118,7 +122,9 @@ class FileDownloadSession: CommonCloudContainer {
             MicrosoftOneDriveService.shared.downloadKeyShare(shareId: sharesIds[1]) { response in
                 guard let share = try? JSONDecoder().decode(DatachestKeyShareFile.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
@@ -132,7 +138,9 @@ class FileDownloadSession: CommonCloudContainer {
                     DropboxService.shared.downloadKeyShare(downloadArg: jsonString) { response in
                         guard let share = try? JSONDecoder().decode(DatachestKeyShareFile.self, from: response.data) else {
                             DispatchQueue.main.async {
-                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                if ApplicationStore.shared.uistate.error == nil {
+                                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                }
                             }
                             return
                         }
@@ -153,14 +161,18 @@ class FileDownloadSession: CommonCloudContainer {
             if let document = document, document.exists {
                 if let raw = try? JSONSerialization.data(withJSONObject: document.data()!, options: []) {
                     guard let data = try? JSONDecoder().decode(FirestoreFileDocument.self, from: raw) else {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                         return
                     }
                     completion([data.googleDriveShare, data.microsoftOneDriveShare, data.dropboxShare])
                 }
             }
             else {
-                ApplicationStore.shared.uistate.error = ApplicationError(error: .db)
+                if ApplicationStore.shared.uistate.error == nil {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .db)
+                }
             }
         }
     }

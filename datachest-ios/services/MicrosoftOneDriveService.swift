@@ -11,6 +11,12 @@ class MicrosoftOneDriveService {
     static let shared = MicrosoftOneDriveService()
     private init() {}
     
+    func getDriveInfo(completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.getDriveInfo, data: nil) { response in
+            completion(response)
+        }
+    }
+    
     func createUploadSession(fileName: String, fileMetadata: Data?, completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(endpoint: MicrosoftOneDriveEndpoints.createUploadSession(fileName: fileName), data: fileMetadata) { response in
             completion(response)

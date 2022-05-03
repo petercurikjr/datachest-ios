@@ -8,6 +8,7 @@
 import Foundation
 
 enum DropboxEndpoints: Endpoint {
+    case getSpaceUsage
     case startUploadSession
     case uploadFileInChunks(sessionArg: String)
     case finishUploadSession(sessionArg: String)
@@ -29,6 +30,8 @@ enum DropboxEndpoints: Endpoint {
     //
     var url: String {
         switch self {
+        case .getSpaceUsage:
+            return "https://api.dropboxapi.com/2/users/get_space_usage"
         case .startUploadSession:
             return contentBaseURLString + "/upload_session/start"
         case .uploadFileInChunks:
@@ -48,6 +51,8 @@ enum DropboxEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .getSpaceUsage:
+            return "POST"
         case .startUploadSession:
             return "POST"
         case .uploadFileInChunks:
@@ -67,6 +72,8 @@ enum DropboxEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
+        case .getSpaceUsage:
+            return ["Authorization": authorization]
         case .startUploadSession:
             return ["Authorization": authorization,
                     "Content-Type": "application/octet-stream"]

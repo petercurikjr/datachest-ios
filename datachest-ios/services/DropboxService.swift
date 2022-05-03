@@ -11,6 +11,12 @@ class DropboxService {
     static let shared = DropboxService()
     private init() {}
     
+    func getSpaceUsage(completion: @escaping (NetworkResponse) -> Void) {
+        NetworkService.shared.request(endpoint: DropboxEndpoints.getSpaceUsage, data: nil) { response in
+            completion(response)
+        }
+    }
+    
     func startUploadSession(completion: @escaping (NetworkResponse) -> Void) {
         NetworkService.shared.request(endpoint: DropboxEndpoints.startUploadSession, data: nil) { response in
             completion(response)

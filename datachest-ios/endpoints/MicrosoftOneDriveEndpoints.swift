@@ -8,6 +8,7 @@
 import Foundation
 
 enum MicrosoftOneDriveEndpoints: Endpoint {
+    case getDriveInfo
     case createUploadSession(fileName: String)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case uploadKeyShareFile(fileName: String)
@@ -25,6 +26,8 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     //
     var url: String {
         switch self {
+        case .getDriveInfo:
+            return baseURLString
         case .createUploadSession(let fileName):
             return baseURLString + "/items/root:\(DatachestFolders.files.full)/\(fileName):/createUploadSession"
         case .uploadFileInChunks(let resumableURL, _, _):
@@ -43,6 +46,8 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .getDriveInfo:
+            return "GET"
         case .createUploadSession:
             return "POST"
         case .uploadFileInChunks:
@@ -60,6 +65,8 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
+        case .getDriveInfo:
+            return ["Authorization": authorization]
         case .createUploadSession:
             return ["Authorization": authorization,
                     "Content-Type": "application/json"]

@@ -8,6 +8,7 @@
 import Foundation
 
 enum GoogleDriveEndpoints: Endpoint {
+    case getAboutData
     case uploadKeyShareFile(resumableURL: String, fileSize: Int)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
@@ -29,6 +30,8 @@ enum GoogleDriveEndpoints: Endpoint {
     //
     var url: String {
         switch self {
+        case .getAboutData:
+            return baseURLString + "/drive/v2/about"
         case .uploadKeyShareFile(let resumableURL, _):
             return resumableURL
         case .getResumableUploadURL:
@@ -48,6 +51,8 @@ enum GoogleDriveEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .getAboutData:
+            return "GET"
         case .uploadKeyShareFile:
             return "PUT"
         case .getResumableUploadURL:
@@ -67,6 +72,8 @@ enum GoogleDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
+        case .getAboutData:
+            return ["Authorization": authorization]
         case .uploadKeyShareFile(_, let fileSize):
             return ["Authorization": authorization,
                     "Content-Length": "\(fileSize)"]

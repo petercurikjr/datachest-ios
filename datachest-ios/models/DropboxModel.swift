@@ -7,6 +7,21 @@
 
 import Foundation
 
+struct DropboxSpaceUsageResponse: Codable {
+    let allocation: DropboxSpaceAllocation
+    let used: Int64
+}
+
+struct DropboxSpaceAllocation: Codable {
+    let tag: String
+    let allocated: Int64
+    
+    private enum CodingKeys: String, CodingKey {
+        case tag = ".tag"
+        case allocated
+    }
+}
+
 struct DropboxUploadFileMetadata: Codable {
     let cursor: DropboxUploadFileCursor
     let close: Bool

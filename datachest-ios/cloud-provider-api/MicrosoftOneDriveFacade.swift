@@ -9,12 +9,25 @@ import Foundation
 
 class MicrosoftOneDriveFacade {
     static let shared = MicrosoftOneDriveFacade()
-    var activeUploadSessions: [MicrosoftOneDriveUploadSession] = []
     
     private init() {}
     
+    func getDriveInfo(completion: @escaping (MicrosoftOneDriveDriveInfoResponse) -> Void) {
+        MicrosoftOneDriveService.shared.getDriveInfo() { response in
+            guard let driveInfo = try? JSONDecoder().decode(MicrosoftOneDriveDriveInfoResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                }
+                return
+            }
+            completion(driveInfo)
+        }
+    }
+    
     func uploadFile(fileUrl: URL) {
-        activeUploadSessions.append(MicrosoftOneDriveUploadSession(fileUrl: fileUrl))
+        let _ = MicrosoftOneDriveUploadSession(fileUrl: fileUrl)
     }
     
     func listFilesOnCloud(completion: @escaping ([MicrosoftOneDriveFileResponse]) -> Void) {
@@ -23,7 +36,9 @@ class MicrosoftOneDriveFacade {
             MicrosoftOneDriveService.shared.listFiles() { response in
                 guard let files = try? JSONDecoder().decode(MicrosoftOneDriveFilesResponse.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }

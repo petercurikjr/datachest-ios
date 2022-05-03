@@ -63,7 +63,9 @@ class DropboxFileUploadSession: FileUploadSession {
                         DropboxService.shared.finishUploadSession(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { response in
                             guard let fileInfo = try? JSONDecoder().decode(DropboxFileResponse.self, from: response.data) else {
                                 DispatchQueue.main.async {
-                                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                    if ApplicationStore.shared.uistate.error == nil {
+                                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                    }
                                 }
                                 return
                             }

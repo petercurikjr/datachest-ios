@@ -58,7 +58,9 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                 if (200...201).contains(response.code) {
                     guard let fileInfo = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            if ApplicationStore.shared.uistate.error == nil {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
                         }
                         return
                     }

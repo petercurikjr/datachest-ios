@@ -12,6 +12,20 @@ class GoogleDriveFacade {
     
     private init() {}
     
+    func getAboutData(completion: @escaping (GoogleDriveAboutResponse) -> Void) {
+        GoogleDriveService.shared.getAboutData { response in
+            guard let aboutInfo = try? JSONDecoder().decode(GoogleDriveAboutResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                }
+                return
+            }
+            completion(aboutInfo)
+        }
+    }
+    
     func uploadFile(fileUrl: URL) {
         let _ = GoogleDriveFileUploadSession(fileUrl: fileUrl) { closureGd in
             closureGd.createNewUploadSession(destinationFolder: .files, fileName: nil) { _ in
@@ -30,7 +44,9 @@ class GoogleDriveFacade {
             ) { response in
                 guard let files = try? JSONDecoder().decode(GoogleDriveListFilesResponse.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
@@ -43,7 +59,9 @@ class GoogleDriveFacade {
         GoogleDriveService.shared.getFileSize(fileId: fileId) { response in
             guard let fileSize = try? JSONDecoder().decode(GoogleDriveFileSize.self, from: response.data) else {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
                 }
                 return
             }

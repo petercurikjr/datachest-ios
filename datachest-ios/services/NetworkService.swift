@@ -38,7 +38,9 @@ class NetworkService: ObservableObject {
                     }
                 }
                 
-                repeatTask.resume()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    repeatTask.resume()
+                }
             }
         }
         
@@ -61,7 +63,9 @@ class NetworkService: ObservableObject {
                         }
                     }
                     
-                    repeatTask.resume()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        repeatTask.resume()
+                    }
                 }
             }
 
@@ -101,7 +105,9 @@ class NetworkService: ObservableObject {
             }
             if !silentError {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+                    }
                 }
             }
         }
@@ -118,7 +124,9 @@ class NetworkService: ObservableObject {
         let hasError = !(200...399).contains(responseCode) || error != nil
         if hasError && !silentError {
             DispatchQueue.main.async {
-                ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+                if ApplicationStore.shared.uistate.error == nil {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .network)
+                }
             }
         }
         return DownloadResponse(hasError: hasError, tmpUrl: url)

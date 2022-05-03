@@ -44,7 +44,9 @@ extension FilesView {
             GoogleDriveFacade.shared.getFileSize(fileId: file.id) { fileSize in
                 guard let availableSpace = DeviceHelper.shared.getAvailableStorageSpace(), fileSize < availableSpace else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                        }
                     }
                     return
                 }
@@ -56,7 +58,9 @@ extension FilesView {
         func microsoftOneDriveDownloadFile(file: MicrosoftOneDriveFileResponse) {
             guard let availableSpace = DeviceHelper.shared.getAvailableStorageSpace(), file.size < availableSpace else {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                    }
                 }
                 return
             }
@@ -67,7 +71,9 @@ extension FilesView {
         func dropboxDownloadFile(file: DropboxFileResponse) {
             guard let availableSpace = DeviceHelper.shared.getAvailableStorageSpace(), file.size ?? 0 < availableSpace else {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .notEnoughStorageSpace)
+                    }
                 }
                 return
             }
