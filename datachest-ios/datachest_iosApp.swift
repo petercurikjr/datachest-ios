@@ -28,6 +28,7 @@ struct datachest_iosApp: App {
                 if store.signedInAll != nil {
                     if store.signedInAll! {
                         MainView(selection: 0)
+                            .environmentObject(store)
                     }
                     else {
                         LoginView()

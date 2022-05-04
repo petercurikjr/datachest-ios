@@ -19,7 +19,7 @@ class FileUploadSession: CommonCloudContainer {
     
     var ds: InputStream?
     var sessionId: String?
-    var fileSize: Int?
+    var fileSize: Int64?
     
     var fileAESTags: [Data] = []
     var uploadedFileID = ""
@@ -38,7 +38,7 @@ class FileUploadSession: CommonCloudContainer {
         
         do {
             let fs = try fileUrl.resourceValues(forKeys: [.fileSizeKey]).fileSize
-            self.fileSize = fs
+            self.fileSize = Int64(fs ?? 0)
             if fs != nil {
                 self.ds = InputStream(url: fileUrl)!
                 self.ds!.open()

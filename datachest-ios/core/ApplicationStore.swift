@@ -20,6 +20,7 @@ struct UIState {
     var signedInGoogle: Bool
     var signedInMicrosoft: Bool
     var signedInDropbox: Bool
+    var ongoingUploads: [DatachestOngoingUpload]
 }
 
 final class ApplicationStore: ObservableObject {
@@ -35,7 +36,8 @@ final class ApplicationStore: ObservableObject {
         error: nil,
         signedInGoogle: false,
         signedInMicrosoft: false,
-        signedInDropbox: false
+        signedInDropbox: false,
+        ongoingUploads: []
     )
     var signedInAll: Bool? {
         if [self.state.googleAccessToken, self.state.microsoftAccessToken, self.state.dropboxAccessToken].contains("")

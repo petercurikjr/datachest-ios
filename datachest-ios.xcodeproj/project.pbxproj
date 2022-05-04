@@ -37,6 +37,7 @@
 		BCABF2BA27EE02BA00617E9F /* CommonCloudContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABF2B927EE02BA00617E9F /* CommonCloudContainer.swift */; };
 		BCAD21BD2821D693009BF3B5 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD21BC2821D693009BF3B5 /* ProfileViewModel.swift */; };
 		BCAD21C02821DA13009BF3B5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD21BF2821DA13009BF3B5 /* LoginView.swift */; };
+		BCAD21C32821F05F009BF3B5 /* UploadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD21C22821F05F009BF3B5 /* UploadListView.swift */; };
 		BCAD586327DFA993005C4B59 /* MicrosoftOneDriveFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */; };
 		BCAD586627DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */; };
 		BCAD586927DFA9AF005C4B59 /* MicrosoftOneDriveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */; };
@@ -91,6 +92,7 @@
 		BCABF2B927EE02BA00617E9F /* CommonCloudContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonCloudContainer.swift; sourceTree = "<group>"; };
 		BCAD21BC2821D693009BF3B5 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		BCAD21BF2821DA13009BF3B5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		BCAD21C22821F05F009BF3B5 /* UploadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadListView.swift; sourceTree = "<group>"; };
 		BCAD586227DFA993005C4B59 /* MicrosoftOneDriveFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFacade.swift; sourceTree = "<group>"; };
 		BCAD586527DFA9A2005C4B59 /* MicrosoftOneDriveFileUploadSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveFileUploadSession.swift; sourceTree = "<group>"; };
 		BCAD586827DFA9AF005C4B59 /* MicrosoftOneDriveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicrosoftOneDriveService.swift; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 				BC88418B274FF44C00E6E1E2 /* ProfileView.swift */,
 				BCA79AEF2813FA7200821BE2 /* AppStartView.swift */,
 				BCAD21BF2821DA13009BF3B5 /* LoginView.swift */,
+				BCAD21C22821F05F009BF3B5 /* UploadListView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -448,6 +451,7 @@
 				BCA4F8D227F3B55200FBF046 /* FirestoreModel.swift in Sources */,
 				BCABF2BA27EE02BA00617E9F /* CommonCloudContainer.swift in Sources */,
 				BC9C7E8F27E7A94700ECCA44 /* GoogleDriveModel.swift in Sources */,
+				BCAD21C32821F05F009BF3B5 /* UploadListView.swift in Sources */,
 				BCA3934127F2071D006B2A94 /* UploadView.swift in Sources */,
 				BCA3933527F1FCCD006B2A94 /* ApplicationStore.swift in Sources */,
 				BCC170E927D682450073789D /* GoogleDriveEndpoints.swift in Sources */,

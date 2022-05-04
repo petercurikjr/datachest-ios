@@ -13,8 +13,9 @@ extension FilesView {
         @Published var microsoftOneDriveFiles: [MicrosoftOneDriveFileResponse] = []
         @Published var dropboxFiles: [DropboxFileResponse] = []
         
-        /// Used for time delays between requests. Dropbox is sensitive to heavy traffic from one client
+        /// Used for time delays between requests. Dropbox and Microsoft are sensitive to heavy traffic from one client
         var dropboxDidRequestFilesList = false
+        var microsoftDidRequestFilesList = false
         
         func listFilesOnCloud() {
             GoogleDriveFacade.shared.listFilesOnCloud() { files in
@@ -22,9 +23,15 @@ extension FilesView {
                     self.googleDriveFiles = files
                 }
             }
-            MicrosoftOneDriveFacade.shared.listFilesOnCloud() { files in
-                DispatchQueue.main.async {
-                    self.microsoftOneDriveFiles = files
+            if !self.microsoftDidRequestFilesList {
+                self.microsoftDidRequestFilesList = true
+                MicrosoftOneDriveFacade.shared.listFilesOnCloud() { files in
+                    DispatchQueue.main.async {
+                        self.microsoftOneDriveFiles = files
+                    }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.microsoftDidRequestFilesList = false
                 }
             }
             if !self.dropboxDidRequestFilesList {

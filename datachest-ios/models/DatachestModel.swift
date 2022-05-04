@@ -22,6 +22,15 @@ enum ErrorMessageType: String {
     case decryption = "File decryption failed."
 }
 
+struct DatachestOngoingUpload: Identifiable {
+    let id: Int
+    let owner: DatachestSupportedClouds
+    let fileName: String
+    var uploaded: String = "0"
+    let total: String
+    var finished: Bool = false
+}
+
 struct DatachestKeyShareFile: Codable {
     let keyShare: String
     let mappedFileData: DatachestMappedFileData?

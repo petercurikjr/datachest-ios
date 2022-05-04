@@ -9,7 +9,9 @@ import CryptoKit
 import Foundation
 
 class DropboxFileUploadSession: FileUploadSession {
-    var bytesTransferred = 0
+    var bytesTransferred: Int64 = 0
+    var ongoingUpload: DatachestOngoingUpload?
+    var uiUpdateCounter = 0
     var finishUpload = false
     
     init(fileUrl: URL) {
@@ -19,6 +21,14 @@ class DropboxFileUploadSession: FileUploadSession {
             if let dictionary = jsonRawObject as? [String: Any] {
                 if let sid = dictionary["session_id"] as? String {
                     self.sessionId = sid
+                    let ongoingUpload = DatachestOngoingUpload(
+                        id: ApplicationStore.shared.uistate.ongoingUploads.count,
+                        owner: .dropbox,
+                        fileName: self.fileName,
+                        total: ByteCountFormatter.string(fromByteCount: self.fileSize ?? 0, countStyle: .binary)
+                    )
+                    ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
+                    self.ongoingUpload = ongoingUpload
                     self.uploadFile()
                 }
             }
@@ -26,6 +36,7 @@ class DropboxFileUploadSession: FileUploadSession {
     }
     
     private func uploadFile() {
+        self.uiUpdateCounter += 1
         if self.ds != nil && self.sessionId != nil {
             let readStreamBytes = self.ds!.read(self.buffer, maxLength: self.bufferSize)
             if readStreamBytes < bufferSize { self.finishUpload = true }
@@ -36,7 +47,7 @@ class DropboxFileUploadSession: FileUploadSession {
             
             if !finishUpload {
                 let sessionArg = DropboxUploadFileMetadata(
-                    cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: self.bytesTransferred),
+                    cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: Int(self.bytesTransferred)),
                     close: false
                 )
 
@@ -44,7 +55,12 @@ class DropboxFileUploadSession: FileUploadSession {
                     if let jsonString = String(data: jsonData, encoding: .utf8) {
                         DropboxService.shared.uploadFileInChunks(chunk: ciphertextChunk.ciphertext, sessionArg: jsonString) { _ in
                             if self.ds!.hasBytesAvailable {
-                                self.bytesTransferred += readStreamBytes
+                                self.bytesTransferred += Int64(readStreamBytes)
+                                if let u = self.ongoingUpload, self.uiUpdateCounter % 5 == 0 {
+                                    DispatchQueue.main.async {
+                                        ApplicationStore.shared.uistate.ongoingUploads[u.id].uploaded = ByteCountFormatter.string(fromByteCount: self.bytesTransferred, countStyle: .binary)
+                                    }
+                                }
                                 self.uploadFile()
                             }
                         }
@@ -54,7 +70,7 @@ class DropboxFileUploadSession: FileUploadSession {
             
             else {
                 let sessionArg = DropboxFinishUploadMetadata(
-                    cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: self.bytesTransferred),
+                    cursor: DropboxUploadFileCursor(session_id: self.sessionId!, offset: Int(self.bytesTransferred)),
                     commit: DropboxCreateItemCommit(path: "\(DatachestFolders.files.full)/\(self.fileName)", mode: "add", autorename: true)
                 )
                 
@@ -71,6 +87,11 @@ class DropboxFileUploadSession: FileUploadSession {
                             }
                             self.uploadedFileID = String(fileInfo.id.dropFirst(3))
                             self.distributeKeyShares(fileOwningCloud: .dropbox)
+                            if let u = self.ongoingUpload {
+                                DispatchQueue.main.async {
+                                    ApplicationStore.shared.uistate.ongoingUploads[u.id].finished = true
+                                }
+                            }
                         }
                     }
                 }

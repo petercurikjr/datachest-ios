@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct UploadView: View {
+    @EnvironmentObject private var state: ApplicationStore
     @StateObject private var vm = UploadViewModel()
     
     var body: some View {
@@ -78,7 +79,7 @@ struct UploadView: View {
                             .scaledToFit()
                             .frame(width: 35, height: 35, alignment: .trailing)
                             .padding(.horizontal)
-                    }
+                    }.frame(width: 68, height: 50, alignment: .center)
                     VStack {
                         Button(action: { vm.showDocumentPickerDropbox.toggle() }) {
                             Text("Upload")
@@ -103,6 +104,21 @@ struct UploadView: View {
                 Spacer()
                 Spacer()
             }.navigationTitle("Upload your files")
+            .toolbar {
+                if self.state.uistate.ongoingUploads.contains(where: {$0.finished == false}) {
+                    HStack {
+                        Spacer()
+                        Text("Upload is in progress")
+                        VStack {
+                            NavigationLink(destination: UploadListView()) {
+                                VStack {
+                                    Image(systemName: "arrow.right")
+                                }
+                            }.navigationViewStyle(StackNavigationViewStyle())
+                        }
+                    }
+                }
+            }
             .onAppear {
                 self.vm.getCloudQuotas()
             }
