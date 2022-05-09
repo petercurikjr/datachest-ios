@@ -73,7 +73,9 @@ class CommonCloudContainer {
             DropboxService.shared.listFiles(dataArg: json) { response in
                 guard let items = try? JSONDecoder().decode(DropboxListFilesResponse.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
@@ -99,8 +101,10 @@ class CommonCloudContainer {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .withoutEscapingSlashes
         if let jsonData = try? jsonEncoder.encode(dataArg) {
-            DropboxService.shared.createFolder(dataArg: jsonData) { _ in
-                completion()
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: 0...2)) {
+                DropboxService.shared.createFolder(dataArg: jsonData) { _ in
+                    completion()
+                }
             }
         }
     }
@@ -126,7 +130,9 @@ class CommonCloudContainer {
             GoogleDriveService.shared.listFiles(q: query) { response in
                 guard let items = try? JSONDecoder().decode(GoogleDriveListFilesResponse.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
@@ -146,7 +152,9 @@ class CommonCloudContainer {
                         GoogleDriveService.shared.createFolder(metadata: jsonData) { response in
                             guard let createdFolder = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
                                 DispatchQueue.main.async {
-                                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                    if ApplicationStore.shared.uistate.error == nil {
+                                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                    }
                                 }
                                 return
                             }

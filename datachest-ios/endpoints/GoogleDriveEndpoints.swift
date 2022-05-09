@@ -8,6 +8,7 @@
 import Foundation
 
 enum GoogleDriveEndpoints: Endpoint {
+    case getAboutData
     case uploadKeyShareFile(resumableURL: String, fileSize: Int)
     case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
     case getResumableUploadURL
@@ -29,6 +30,8 @@ enum GoogleDriveEndpoints: Endpoint {
     //
     var url: String {
         switch self {
+        case .getAboutData:
+            return baseURLString + "/drive/v2/about"
         case .uploadKeyShareFile(let resumableURL, _):
             return resumableURL
         case .getResumableUploadURL:
@@ -48,6 +51,8 @@ enum GoogleDriveEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .getAboutData:
+            return "GET"
         case .uploadKeyShareFile:
             return "PUT"
         case .getResumableUploadURL:
@@ -67,6 +72,8 @@ enum GoogleDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
+        case .getAboutData:
+            return ["Authorization": authorization]
         case .uploadKeyShareFile(_, let fileSize):
             return ["Authorization": authorization,
                     "Content-Length": "\(fileSize)"]
@@ -93,8 +100,9 @@ enum GoogleDriveEndpoints: Endpoint {
         if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "google"),
            let object = try? JSONDecoder().decode(DatachestGoogleAuthKeychainItem.self, from: keychainItem) {
             let dateNow = Date()
-            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
-            if diffMinutes < 5 {
+            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
+            print("googletoken", diffMinutes)
+            if diffMinutes < 3 {
                 GoogleAuthService.shared.signInGoogleSilently()
             }
         }

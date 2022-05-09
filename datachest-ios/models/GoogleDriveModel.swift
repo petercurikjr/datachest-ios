@@ -7,9 +7,11 @@
 
 import Foundation
 
-enum GoogleDriveItemMimeType: String, Codable {
-    case folder = "application/vnd.google-apps.folder"
-    case file = "application/octet-stream"
+struct GoogleDriveAboutResponse: Codable {
+    let name: String
+    let quotaBytesTotal: String
+    let quotaBytesUsed: String
+    let quotaType: GoogleDriveQuotaType
 }
 
 struct GoogleDriveListFilesResponse: Codable {
@@ -31,6 +33,16 @@ struct GoogleDriveCreateItemMetadata: Codable {
     let name: String
     let mimeType: String
     let parents: [String]?
+}
+
+enum GoogleDriveQuotaType: String, Codable {
+    case limited = "LIMITED"
+    case unlimited = "UNLIMITED"
+}
+
+enum GoogleDriveItemMimeType: String, Codable {
+    case folder = "application/vnd.google-apps.folder"
+    case file = "application/octet-stream"
 }
 
 enum GoogleDriveQuery {

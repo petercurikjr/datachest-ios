@@ -9,12 +9,39 @@ import Foundation
 
 class DropboxFacade {
     static let shared = DropboxFacade()
-    var activeUploadSessions: [DropboxFileUploadSession] = []
 
     private init() {}
 
+    func getCurrentAccount(completion: @escaping (DropboxCurrentAccountResponse) -> Void) {
+        DropboxService.shared.getCurrentAccount { response in
+            guard let account = try? JSONDecoder().decode(DropboxCurrentAccountResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                }
+                return
+            }
+            completion(account)
+        }
+    }
+    
+    func getSpaceUsage(completion: @escaping (DropboxSpaceUsageResponse) -> Void) {
+        DropboxService.shared.getSpaceUsage { response in
+            guard let spaceUsage = try? JSONDecoder().decode(DropboxSpaceUsageResponse.self, from: response.data) else {
+                DispatchQueue.main.async {
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
+                }
+                return
+            }
+            completion(spaceUsage)
+        }
+    }
+    
     func uploadFile(fileUrl: URL) {
-        activeUploadSessions.append(DropboxFileUploadSession(fileUrl: fileUrl))
+        let _ = DropboxFileUploadSession(fileUrl: fileUrl)
     }
     
     func listFilesOnCloud(completion: @escaping ([DropboxFileResponse]) -> Void) {
@@ -25,7 +52,9 @@ class DropboxFacade {
                 DropboxService.shared.listFiles(dataArg: jsonData) { response in
                     guard let files = try? JSONDecoder().decode(DropboxListFilesResponse.self, from: response.data) else {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            if ApplicationStore.shared.uistate.error == nil {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
                         }
                         return
                     }

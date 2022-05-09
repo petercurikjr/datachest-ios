@@ -8,13 +8,15 @@
 import Foundation
 
 enum DropboxEndpoints: Endpoint {
-    case startUploadSession
-    case uploadFileInChunks(sessionArg: String)
-    case finishUploadSession(sessionArg: String)
-    case uploadKeyShareFile(uploadArg: String)
-    case download(downloadArg: String)
-    case listFiles
-    case createFolder
+    case getCurrentAccount(accessToken: String)
+    case getSpaceUsage(accessToken: String)
+    case startUploadSession(accessToken: String)
+    case uploadFileInChunks(accessToken: String, sessionArg: String)
+    case finishUploadSession(accessToken: String, sessionArg: String)
+    case uploadKeyShareFile(accessToken: String, uploadArg: String)
+    case download(accessToken: String, downloadArg: String)
+    case listFiles(accessToken: String)
+    case createFolder(accessToken: String)
     //
     private var contentBaseURLString: String {
         return "https://content.dropboxapi.com/2/files"
@@ -22,13 +24,16 @@ enum DropboxEndpoints: Endpoint {
     private var apiBaseURLString: String {
         return "https://api.dropboxapi.com/2/files"
     }
-    
-    private var authorization: String {
-        return "Bearer " + self.getAccessToken()
+    private var usersBaseURLString: String {
+        return "https://api.dropboxapi.com/2/users"
     }
     //
     var url: String {
         switch self {
+        case .getCurrentAccount:
+            return usersBaseURLString + "/get_current_account"
+        case .getSpaceUsage:
+            return usersBaseURLString + "/get_space_usage"
         case .startUploadSession:
             return contentBaseURLString + "/upload_session/start"
         case .uploadFileInChunks:
@@ -48,6 +53,10 @@ enum DropboxEndpoints: Endpoint {
     
     var httpMethod: String {
         switch self {
+        case .getCurrentAccount:
+            return "POST"
+        case .getSpaceUsage:
+            return "POST"
         case .startUploadSession:
             return "POST"
         case .uploadFileInChunks:
@@ -67,43 +76,34 @@ enum DropboxEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case .startUploadSession:
-            return ["Authorization": authorization,
+        case .getCurrentAccount(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .getSpaceUsage(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .startUploadSession(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/octet-stream"]
-        case .uploadFileInChunks(let sessionArg):
-            return ["Authorization": authorization,
+        case .uploadFileInChunks(let accessToken, let sessionArg):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Dropbox-API-Arg": sessionArg,
                     "Content-Type": "application/octet-stream"]
-        case .finishUploadSession(let sessionArg):
-            return ["Authorization": authorization,
+        case .finishUploadSession(let accessToken, let sessionArg):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Dropbox-API-Arg": sessionArg,
                     "Content-Type": "application/octet-stream"]
-        case .uploadKeyShareFile(let uploadArg):
-            return ["Authorization": authorization,
+        case .uploadKeyShareFile(let accessToken, let uploadArg):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Dropbox-API-Arg": uploadArg,
                     "Content-Type": "application/octet-stream"]
-        case .download(let downloadArg):
-            return ["Authorization": authorization,
+        case .download(let accessToken, let downloadArg):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Dropbox-API-Arg": downloadArg]
-        case .listFiles:
-            return ["Authorization": authorization,
+        case .listFiles(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
-        case .createFolder:
-            return ["Authorization": authorization,
+        case .createFolder(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
         }
-    }
-    
-    private func getAccessToken() -> String {
-        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-itemf", account: "dropbox"),
-           let object = try? JSONDecoder().decode(DatachestDropboxAuthKeychainItem.self, from: keychainItem) {
-            let dateNow = Date()
-            let diffMinutes = (Int(dateNow.timeIntervalSince1970 - object.accessTokenExpirationDate.timeIntervalSince1970)) / 60
-            if diffMinutes < 5 {
-                DropboxAuthService.shared.signInDropboxSilently()
-            }
-        }
-        
-        return ApplicationStore.shared.state.dropboxAccessToken
     }
 }

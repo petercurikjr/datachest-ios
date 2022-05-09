@@ -7,6 +7,26 @@
 
 import Foundation
 
+struct MicrosoftOneDriveDriveInfoResponse: Codable {
+    let id: String
+    let owner: MicrosoftOneDriveOwner
+    let quota: MicrosoftOneDriveQuota
+}
+
+struct MicrosoftOneDriveOwner: Codable {
+    let user: MicrosoftOneDriveUser
+}
+
+struct MicrosoftOneDriveUser: Codable {
+    let id: String
+    let displayName: String
+}
+
+struct MicrosoftOneDriveQuota: Codable {
+    let total: Int64
+    let remaining: Int64
+}
+
 struct MicrosoftOneDriveResumableUploadResponse: Codable {
     let uploadUrl: String
     let expirationDateTime: String

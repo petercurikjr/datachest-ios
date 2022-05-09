@@ -9,7 +9,9 @@ import CryptoKit
 import Foundation
 
 class GoogleDriveFileUploadSession: FileUploadSession {
-    var bytesTransferred = 0
+    var bytesTransferred: Int64 = 0
+    var ongoingUpload: DatachestOngoingUpload?
+    var uiUpdateCounter = 0
     
     init(fileUrl: URL, completion: @escaping (GoogleDriveFileUploadSession) -> Void) {
         super.init(fileUrl: fileUrl, bufferSize: .googleDrive)
@@ -35,6 +37,7 @@ class GoogleDriveFileUploadSession: FileUploadSession {
     }
     
     func uploadFile() {
+        self.uiUpdateCounter += 1
         if self.ds != nil && self.sessionId != nil {
             let readStreamBytes = self.ds!.read(self.buffer, maxLength: self.bufferSize)
             if readStreamBytes == 0 { return }
@@ -44,7 +47,7 @@ class GoogleDriveFileUploadSession: FileUploadSession {
             self.fileAESTags.append(ciphertextChunk.tag)
             
             let startRange = self.bytesTransferred
-            let endRange = self.bytesTransferred + readStreamBytes - 1
+            let endRange = self.bytesTransferred + Int64(readStreamBytes - 1)
             GoogleDriveService.shared.uploadFileInChunks(
                 chunk: ciphertextChunk.ciphertext,
                 bytes: "\(startRange)-\(endRange)/\(self.fileSize!)",
@@ -52,19 +55,31 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                 resumableURL: self.sessionId!
             ) { response in
                 if self.ds!.hasBytesAvailable {
-                    self.bytesTransferred += readStreamBytes
+                    self.bytesTransferred += Int64(readStreamBytes)
+                    if let u = self.ongoingUpload, self.uiUpdateCounter % 5 == 0 {
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.ongoingUploads[u.id].uploaded = ByteCountFormatter.string(fromByteCount: self.bytesTransferred, countStyle: .binary)
+                        }
+                    }
                     self.uploadFile()
                 }
                 if (200...201).contains(response.code) {
                     guard let fileInfo = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            if ApplicationStore.shared.uistate.error == nil {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
                         }
                         return
                     }
                     self.uploadedFileID = fileInfo.id
                     self.createNewUploadSession(destinationFolder: .keyshareAndMetadata, fileName: self.uploadedFileID) { _ in
                         self.distributeKeyShares(fileOwningCloud: .google)
+                    }
+                    if let u = self.ongoingUpload {
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.ongoingUploads[u.id].finished = true
+                        }
                     }
                 }
             }

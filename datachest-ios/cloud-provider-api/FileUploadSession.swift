@@ -19,7 +19,7 @@ class FileUploadSession: CommonCloudContainer {
     
     var ds: InputStream?
     var sessionId: String?
-    var fileSize: Int?
+    var fileSize: Int64?
     
     var fileAESTags: [Data] = []
     var uploadedFileID = ""
@@ -38,14 +38,16 @@ class FileUploadSession: CommonCloudContainer {
         
         do {
             let fs = try fileUrl.resourceValues(forKeys: [.fileSizeKey]).fileSize
-            self.fileSize = fs
+            self.fileSize = Int64(fs ?? 0)
             if fs != nil {
                 self.ds = InputStream(url: fileUrl)!
                 self.ds!.open()
             }
         }
         catch {
-            ApplicationStore.shared.uistate.error = ApplicationError(error: .readIO)
+            if ApplicationStore.shared.uistate.error == nil {
+                ApplicationStore.shared.uistate.error = ApplicationError(error: .readIO)
+            }
         }
     }
     
@@ -81,7 +83,9 @@ class FileUploadSession: CommonCloudContainer {
                     GoogleDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[0], resumableURL: resumableURL!) { response in
                         guard let keyShareFile = try? JSONDecoder().decode(GoogleDriveFileResponse.self, from: response.data) else {
                             DispatchQueue.main.async {
-                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                if ApplicationStore.shared.uistate.error == nil {
+                                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                                }
                             }
                             return
                         }
@@ -98,7 +102,9 @@ class FileUploadSession: CommonCloudContainer {
         MicrosoftOneDriveService.shared.uploadKeyShareFile(file: keyShareFilesJson[1], fileName: self.uploadedFileID) { response in
             guard let keyShareFile = try? JSONDecoder().decode(MicrosoftOneDriveFileResponse.self, from: response.data) else {
                 DispatchQueue.main.async {
-                    ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    if ApplicationStore.shared.uistate.error == nil {
+                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                    }
                 }
                 return
             }
@@ -112,7 +118,9 @@ class FileUploadSession: CommonCloudContainer {
                 DropboxService.shared.uploadKeyShareFile(file: keyShareFilesJson[2], uploadArg: jsonString) { response in
                     guard let keyShareFile = try? JSONDecoder().decode(DropboxFileResponse.self, from: response.data) else {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            if ApplicationStore.shared.uistate.error == nil {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
                         }
                         return
                     }
@@ -134,7 +142,9 @@ class FileUploadSession: CommonCloudContainer {
             "dropboxShare": self.uploadedDropboxKeyShareFileId
         ]) { err in
             if err != nil {
-                ApplicationStore.shared.uistate.error = ApplicationError(error: .db)
+                if ApplicationStore.shared.uistate.error == nil {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .db)
+                }
             }
         }
     }

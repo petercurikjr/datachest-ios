@@ -9,7 +9,9 @@ import Foundation
 import CryptoKit
 
 class MicrosoftOneDriveUploadSession: FileUploadSession {
-    var bytesTransferred = 0
+    var bytesTransferred: Int64 = 0
+    var ongoingUpload: DatachestOngoingUpload?
+    var uiUpdateCounter = 0
     
     init(fileUrl: URL) {
         super.init(fileUrl: fileUrl, bufferSize: .microsoftOneDrive)
@@ -18,12 +20,24 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
             MicrosoftOneDriveService.shared.createUploadSession(fileName: self.fileName, fileMetadata: jsonData) { response in
                 guard let resumableUploadResponse = try? JSONDecoder().decode(MicrosoftOneDriveResumableUploadResponse.self, from: response.data) else {
                     DispatchQueue.main.async {
-                        ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        if ApplicationStore.shared.uistate.error == nil {
+                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                        }
                     }
                     return
                 }
                 
                 self.sessionId = resumableUploadResponse.uploadUrl
+                let ongoingUpload = DatachestOngoingUpload(
+                    id: ApplicationStore.shared.uistate.ongoingUploads.count,
+                    owner: DatachestSupportedClouds.microsoft,
+                    fileName: self.fileName,
+                    total: ByteCountFormatter.string(fromByteCount: self.fileSize ?? 0, countStyle: .binary)
+                )
+                DispatchQueue.main.async {
+                    ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
+                }
+                self.ongoingUpload = ongoingUpload
                 self.uploadFile()
             }
         }
@@ -31,6 +45,7 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
     }
     
     private func uploadFile() {
+        self.uiUpdateCounter += 1
         if self.ds != nil && self.sessionId != nil {
             let readStreamBytes = self.ds!.read(self.buffer, maxLength: self.bufferSize)
             if readStreamBytes == 0 { return }
@@ -40,7 +55,7 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
             self.fileAESTags.append(ciphertextChunk.tag)
                         
             let startRange = self.bytesTransferred
-            let endRange = self.bytesTransferred + readStreamBytes - 1
+            let endRange = self.bytesTransferred + Int64(readStreamBytes - 1)
             MicrosoftOneDriveService.shared.uploadFileInChunks(
                 chunk: ciphertextChunk.ciphertext,
                 bytes: "\(startRange)-\(endRange)/\(self.fileSize!)",
@@ -48,18 +63,30 @@ class MicrosoftOneDriveUploadSession: FileUploadSession {
                 resumableURL: self.sessionId!
             ) { response in
                 if self.ds!.hasBytesAvailable {
-                    self.bytesTransferred += readStreamBytes
+                    self.bytesTransferred += Int64(readStreamBytes)
+                    if let u = self.ongoingUpload, self.uiUpdateCounter % 5 == 0 {
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.ongoingUploads[u.id].uploaded = ByteCountFormatter.string(fromByteCount: self.bytesTransferred, countStyle: .binary)
+                        }
+                    }
                     self.uploadFile()
                 }
                 if (200...201).contains(response.code) {
                     guard let fileInfo = try? JSONDecoder().decode(MicrosoftOneDriveFileResponse.self, from: response.data) else {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            if ApplicationStore.shared.uistate.error == nil {
+                                ApplicationStore.shared.uistate.error = ApplicationError(error: .dataParsing)
+                            }
                         }
                         return
                     }
                     self.uploadedFileID = fileInfo.id
                     self.distributeKeyShares(fileOwningCloud: .microsoft)
+                    if let u = self.ongoingUpload {
+                        DispatchQueue.main.async {
+                            ApplicationStore.shared.uistate.ongoingUploads[u.id].finished = true
+                        }
+                    }
                 }
             }
         }

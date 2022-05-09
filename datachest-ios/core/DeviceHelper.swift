@@ -19,7 +19,9 @@ class DeviceHelper {
             }
         }
         
-        ApplicationStore.shared.uistate.error = ApplicationError(error: .readIO)
+        if ApplicationStore.shared.uistate.error == nil {
+            ApplicationStore.shared.uistate.error = ApplicationError(error: .readIO)
+        }
         return nil
     }
     
@@ -34,7 +36,9 @@ class DeviceHelper {
             }
         }
         catch {
-            ApplicationStore.shared.uistate.error = ApplicationError(error: .writeIO)
+            if ApplicationStore.shared.uistate.error == nil {
+                ApplicationStore.shared.uistate.error = ApplicationError(error: .writeIO)
+            }
         }
 
         return folderURL
@@ -46,7 +50,9 @@ class DeviceHelper {
             let filePath = atLocation.appendingPathComponent(fileName)
             let success = FileManager.default.createFile(atPath: filePath.path, contents: nil, attributes: nil)
             if !success {
-                ApplicationStore.shared.uistate.error = ApplicationError(error: .writeIO)
+                if ApplicationStore.shared.uistate.error == nil {
+                    ApplicationStore.shared.uistate.error = ApplicationError(error: .writeIO)
+                }
             }
             return filePath
         }

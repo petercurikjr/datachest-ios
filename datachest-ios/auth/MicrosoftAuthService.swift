@@ -35,7 +35,6 @@ class MicrosoftAuthService {
         
         application?.acquireToken(with: interactiveParameters) { result, error in
             self.handleUser(result)
-            self.signedInAccount = result?.account
         }
     }
     
@@ -46,13 +45,18 @@ class MicrosoftAuthService {
         let webViewParameters = MSALWebviewParameters(authPresentationViewController: rootViewController)
         let signOutParameters = MSALSignoutParameters(webviewParameters: webViewParameters)
         
-        guard let accountToSignOut = self.signedInAccount else { return }
+        guard let accountToSignOut = self.signedInAccount else {
+            print("MICROSOFT no account to sign out. aborting")
+            return
+        }
         application?.signout(with: accountToSignOut, signoutParameters: signOutParameters) { success, error in
             if let error = error {
                 print(error)
                 return
             }
             
+            ApplicationStore.shared.uistate.signedInMicrosoft = false
+            UserDefaults.standard.setValue(true, forKey: "signed-out-microsoft")
             print("MICROSOFT signed out.")
         }
     }
@@ -63,24 +67,28 @@ class MicrosoftAuthService {
             if let jsonData = try? JSONEncoder().encode(keychainItem) {
                 KeychainHelper.shared.saveToKeychain(value: jsonData, service: "datachest-auth-keychain-item", account: "microsoft")
             }
-            ApplicationStore.shared.state.microsoftAccessToken = user.accessToken
+            
+            ApplicationStore.shared.setMicrosoftAccessToken(token: user.accessToken)
+            UserDefaults.standard.setValue(false, forKey: "signed-out-microsoft")
+            self.signedInAccount = user.account
             print("MICROSOFT signed in.", (user.accessToken))
         }
     }
     
-    // access token platnost 1 hodina
-    // ak sa nepodari ziskat token silently, setnut do storu flag ktory bude v UI indikovat ze sa treba prihlasit
     func signInMicrosoftSilently() {
         if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
            let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
-            guard let account = try? application?.account(forIdentifier: object.accountId) else { // ak toto zlyha, treba dat v ui dat vediet ze sa treba prihlasit
-                print("couldnt sign in silently to Microsoft")
+            guard let account = try? application?.account(forIdentifier: object.accountId) else {
+                ApplicationStore.shared.uistate.signedInMicrosoft = false
                 return
             }
             let silentParameters = MSALSilentTokenParameters(scopes: ["User.Read", "Files.ReadWrite"], account: account)
             application?.acquireTokenSilent(with: silentParameters) { result, error in
                 self.handleUser(result)
             }
+        }
+        else {
+            ApplicationStore.shared.uistate.signedInMicrosoft = false
         }
     }
 }
