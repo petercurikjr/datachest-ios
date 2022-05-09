@@ -12,7 +12,7 @@ struct FilesView: View {
     @StateObject private var vm = FilesViewModel()
     
     var body: some View {
-        if [self.state.uistate.signedInGoogle, self.state.uistate.signedInMicrosoft, self.state.uistate.signedInDropbox].filter{$0}.count < 2 {
+        if [self.state.uistate.signedInGoogle, self.state.uistate.signedInMicrosoft, self.state.uistate.signedInDropbox].filter({$0}).count < 2 {
             LoginView(description: "To download files, you have to be signed to at least two accounts.")
         }
         else {
@@ -170,7 +170,7 @@ struct FilesView: View {
                         }
                     }
                 }.navigationTitle("Your files on cloud")
-            }.listStyle(PlainListStyle())
+            }.listStyle(PlainListStyle()).navigationViewStyle(StackNavigationViewStyle())
         }
     }
 }

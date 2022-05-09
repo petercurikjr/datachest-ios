@@ -153,7 +153,7 @@ struct ProfileView: View {
                 Spacer()
                 Spacer()
             }.padding(30).navigationTitle("Profile")
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

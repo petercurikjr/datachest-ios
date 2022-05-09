@@ -123,7 +123,7 @@ struct UploadView: View {
                 .onAppear {
                     self.vm.getCloudQuotas()
                 }
-            }
+            }.navigationViewStyle(StackNavigationViewStyle())
         }
         else {
             LoginView(description: "To upload files, you have to be signed to all accounts.")
