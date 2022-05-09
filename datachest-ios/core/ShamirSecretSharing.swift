@@ -28,7 +28,7 @@ class ShamirSecretSharingService {
     
     func combine(secretInput: [String]) -> String {
         let sharesObjects = secretInput.compactMap { try? Secret.Share(string: $0) }
-        let someShares = [Secret.Share](sharesObjects[1...2])
+        let someShares = [Secret.Share](sharesObjects[0...(secretInput.count - 1)])
 
         let secretData = try! Secret.combine(shares: someShares)
         return String(data: secretData, encoding: .utf8) ?? ""

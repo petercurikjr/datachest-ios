@@ -17,12 +17,15 @@ extension FilesView {
         var dropboxDidRequestFilesList = false
         var microsoftDidRequestFilesList = false
         
-        func listFilesOnCloud() {
+        func listFilesOnGoogleDrive() {
             GoogleDriveFacade.shared.listFilesOnCloud() { files in
                 DispatchQueue.main.async {
                     self.googleDriveFiles = files
                 }
             }
+        }
+        
+        func listFilesOnMicrosoftOneDrive() {
             if !self.microsoftDidRequestFilesList {
                 self.microsoftDidRequestFilesList = true
                 MicrosoftOneDriveFacade.shared.listFilesOnCloud() { files in
@@ -34,6 +37,9 @@ extension FilesView {
                     self.microsoftDidRequestFilesList = false
                 }
             }
+        }
+        
+        func listFilesOnDropbox() {
             if !self.dropboxDidRequestFilesList {
                 self.dropboxDidRequestFilesList = true
                 DropboxFacade.shared.listFilesOnCloud() { files in

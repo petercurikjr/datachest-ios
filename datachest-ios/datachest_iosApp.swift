@@ -26,13 +26,8 @@ struct datachest_iosApp: App {
         WindowGroup {
             VStack {
                 if store.signedInAll != nil {
-                    if store.signedInAll! {
-                        MainView(selection: 0)
-                            .environmentObject(store)
-                    }
-                    else {
-                        LoginView()
-                    }
+                    MainView(selection: 0)
+                        .environmentObject(store)
                 }
                 else {
                     AppStartView()

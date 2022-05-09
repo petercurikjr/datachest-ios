@@ -12,20 +12,24 @@ extension ProfileView {
         @Published var googleName = ""
         @Published var microsoftName = ""
         @Published var dropboxName = ""
-
-        func getProfileNames() {
+        
+        func getProfileNameGoogleDrive() {
             GoogleDriveFacade.shared.getAboutData { data in
                 DispatchQueue.main.async {
                     self.googleName = data.name
                 }
             }
-            
+        }
+        
+        func getProfileNameMicrosoftOneDrive() {
             MicrosoftOneDriveFacade.shared.getDriveInfo { data in
                 DispatchQueue.main.async {
                     self.microsoftName = data.owner.user.displayName
                 }
             }
-            
+        }
+        
+        func getProfileNameDropbox() {
             DropboxFacade.shared.getCurrentAccount { data in
                 DispatchQueue.main.async {
                     self.dropboxName = (data.name.given_name + " " + data.name.surname)

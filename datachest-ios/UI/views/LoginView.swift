@@ -8,52 +8,63 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject private var state: ApplicationStore
+    var description: String
+    
     var body: some View {
         NavigationView {
             VStack {
                 VStack(alignment: .leading) {
-                    Text("You have to sign in to all accounts before using Datachest.")
+                    Text(self.description)
                 }
                 Spacer()
-                VStack {
-                    Button(action: GoogleAuthService.shared.signInGoogle) {
-                        HStack {
-                            VStack {
-                                Image("google")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25, alignment: .center)
+                if !self.state.uistate.signedInGoogle {
+                    VStack {
+                        Button(action: GoogleAuthService.shared.signInGoogle) {
+                            HStack {
+                                VStack {
+                                    Image("google")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 25, height: 25, alignment: .center)
+                                }
+                                Text("Sign in with Google")
                             }
-                            Text("Sign in with Google")
-                        }
-                    }.buttonStyle(DatachestButton())
-                }.padding()
-                VStack {
-                    Button(action: MicrosoftAuthService.shared.signInMicrosoft) {
-                        HStack {
-                            VStack {
-                                Image("microsoft")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25, alignment: .center)
+                        }.buttonStyle(DatachestButton())
+                    }.padding()
+                }
+
+                if !self.state.uistate.signedInMicrosoft {
+                    VStack {
+                        Button(action: MicrosoftAuthService.shared.signInMicrosoft) {
+                            HStack {
+                                VStack {
+                                    Image("microsoft")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 25, height: 25, alignment: .center)
+                                }
+                                Text("Sign in with Microsoft")
                             }
-                            Text("Sign in with Microsoft")
-                        }
-                    }.buttonStyle(DatachestButton())
-                }.padding()
-                VStack {
-                    Button(action: DropboxAuthService.shared.signInDropbox) {
-                        HStack {
-                            VStack {
-                                Image("dropbox")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 25, height: 25, alignment: .center)
+                        }.buttonStyle(DatachestButton())
+                    }.padding()
+                }
+                
+                if !self.state.uistate.signedInDropbox {
+                    VStack {
+                        Button(action: DropboxAuthService.shared.signInDropbox) {
+                            HStack {
+                                VStack {
+                                    Image("dropbox")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 25, height: 25, alignment: .center)
+                                }
+                                Text("Sign in with Dropbox")
                             }
-                            Text("Sign in with Dropbox")
-                        }
-                    }.buttonStyle(DatachestButton())
-                }.padding()
+                        }.buttonStyle(DatachestButton())
+                    }.padding()
+                }
                 Spacer()
                 Spacer()
             }.padding(30).navigationTitle("Sign in")
@@ -63,6 +74,6 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView()
+        LoginView(description: "Test desc")
     }
 }

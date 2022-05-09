@@ -34,6 +34,7 @@ extension UploadView {
                 }
                 else {
                     DispatchQueue.main.async {
+                        self.isUnlimitedStorageGoogle = false
                         self.remainingSizeGoogle = self.formatRemainingBytes(remainingBytes: ((Int64(data.quotaBytesTotal) ?? 0) - (Int64(data.quotaBytesUsed) ?? 0)))
                         self.googleDriveStorageProgressBarValue = self.getDriveFillAmount(usedStorageSpace: Float(data.quotaBytesUsed), totalStorageSpace: Float(data.quotaBytesTotal))
                     }
