@@ -170,6 +170,26 @@ struct FilesView: View {
                         }
                     }
                 }.navigationTitle("Your files on cloud")
+                .toolbar {
+                    HStack {
+                        Button(action: { self.vm.refresh() }) {
+                            Image(systemName: "arrow.counterclockwise")
+                        }
+                        if self.state.uistate.ongoingDownloads.contains(where: {$0.finished == false}) {
+                            HStack {
+                                Spacer()
+                                Text("Download is in progress")
+                                VStack {
+                                    NavigationLink(destination: DownloadListView()) {
+                                        VStack {
+                                            Image(systemName: "arrow.right")
+                                        }
+                                    }.navigationViewStyle(StackNavigationViewStyle())
+                                }
+                            }
+                        }
+                    }
+                }
             }.listStyle(PlainListStyle()).navigationViewStyle(StackNavigationViewStyle())
         }
     }

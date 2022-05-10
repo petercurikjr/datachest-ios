@@ -17,6 +17,15 @@ extension FilesView {
         var dropboxDidRequestFilesList = false
         var microsoftDidRequestFilesList = false
         
+        func refresh() {
+            self.googleDriveFiles = []
+            self.microsoftOneDriveFiles = []
+            self.dropboxFiles = []
+            self.listFilesOnGoogleDrive()
+            self.listFilesOnMicrosoftOneDrive()
+            self.listFilesOnDropbox()
+        }
+        
         func listFilesOnGoogleDrive() {
             GoogleDriveFacade.shared.listFilesOnCloud() { files in
                 DispatchQueue.main.async {
@@ -63,8 +72,7 @@ extension FilesView {
                     }
                     return
                 }
-                let gd = GoogleDriveFileDownloadSession(fileId: file.id, fileName: file.name)
-                gd.downloadFile()
+                GoogleDriveFacade.shared.downloadFile(file: file)
             }
         }
         
@@ -77,8 +85,7 @@ extension FilesView {
                 }
                 return
             }
-            let mod = MicrosoftOneDriveFileDownloadSession(fileId: file.id, fileName: file.name)
-            mod.downloadFile()
+            MicrosoftOneDriveFacade.shared.downloadFile(file: file)
         }
         
         func dropboxDownloadFile(file: DropboxFileResponse) {
@@ -90,8 +97,7 @@ extension FilesView {
                 }
                 return
             }
-            let dpb = DropboxFileDownloadSession(fileId: file.id, fileName: file.name)
-            dpb.downloadFile()
+            DropboxFacade.shared.downloadFile(file: file)
         }
     }
 }

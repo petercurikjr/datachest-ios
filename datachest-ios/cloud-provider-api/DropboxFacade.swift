@@ -44,6 +44,20 @@ class DropboxFacade {
         let _ = DropboxFileUploadSession(fileUrl: fileUrl)
     }
     
+    func downloadFile(file: DropboxFileResponse) {
+        let dpb = DropboxFileDownloadSession(fileId: file.id, fileName: file.name)
+        let ongoingDownload = DatachestOngoingFileTransfer(
+            id: ApplicationStore.shared.uistate.ongoingDownloads.count,
+            owner: DatachestSupportedClouds.dropbox,
+            fileName: file.name
+        )
+        DispatchQueue.main.async {
+            ApplicationStore.shared.uistate.ongoingDownloads.append(ongoingDownload)
+        }
+        dpb.ongoingDownload = ongoingDownload
+        dpb.downloadFile()
+    }
+    
     func listFilesOnCloud(completion: @escaping ([DropboxFileResponse]) -> Void) {
         let ccd = CommonCloudContainer()
         ccd.dropboxCheckOrCreateAllFolders() {

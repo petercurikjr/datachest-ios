@@ -10,7 +10,7 @@ import Foundation
 
 class GoogleDriveFileUploadSession: FileUploadSession {
     var bytesTransferred: Int64 = 0
-    var ongoingUpload: DatachestOngoingUpload?
+    var ongoingUpload: DatachestOngoingFileTransfer?
     var uiUpdateCounter = 0
     
     init(fileUrl: URL, completion: @escaping (GoogleDriveFileUploadSession) -> Void) {
@@ -58,7 +58,9 @@ class GoogleDriveFileUploadSession: FileUploadSession {
                     self.bytesTransferred += Int64(readStreamBytes)
                     if let u = self.ongoingUpload, self.uiUpdateCounter % 5 == 0 {
                         DispatchQueue.main.async {
-                            ApplicationStore.shared.uistate.ongoingUploads[u.id].uploaded = ByteCountFormatter.string(fromByteCount: self.bytesTransferred, countStyle: .binary)
+                            if let fileSize = self.fileSize {
+                                ApplicationStore.shared.uistate.ongoingUploads[u.id].percentageDone = Int((Double(self.bytesTransferred) / Double(fileSize)) * 100)
+                            }
                         }
                     }
                     self.uploadFile()

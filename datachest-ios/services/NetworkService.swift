@@ -21,9 +21,10 @@ struct DownloadResponse {
 
 class NetworkService: ObservableObject {
     static let shared = NetworkService()
+    private var observation: NSKeyValueObservation?
     private init() {}
     
-    func download(endpoint: Endpoint, completion: @escaping (DownloadResponse) -> Void) {
+    func download(endpoint: Endpoint, ongoingDownloadId: Int?, completion: @escaping (DownloadResponse) -> Void) {
         let task = URLSession.shared.downloadTask(with: self.constructNewRequest(endpoint: endpoint, data: nil)) { url, response, error in
             let handledResponse = self.handleDownloadResponse(url: url, response: response, error: error, silentError: true)
             if !handledResponse.hasError {
@@ -44,6 +45,13 @@ class NetworkService: ObservableObject {
             }
         }
         
+        if let id = ongoingDownloadId {
+            self.observation = task.progress.observe(\.fractionCompleted) { progress, _ in
+                DispatchQueue.main.async {
+                    ApplicationStore.shared.uistate.ongoingDownloads[id].percentageDone = Int(progress.fractionCompleted * 100)
+                }
+            }
+        }
         task.resume()
     }
     

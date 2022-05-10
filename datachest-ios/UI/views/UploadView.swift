@@ -30,7 +30,7 @@ struct UploadView: View {
                                 Text("Upload")
                             }
                             .buttonStyle(DatachestButton())
-                            .fileImporter(isPresented: $vm.showDocumentPickerGoogle, allowedContentTypes: [.text, .pdf]) { res in
+                            .fileImporter(isPresented: $vm.showDocumentPickerGoogle, allowedContentTypes: [.item]) { res in
                                 vm.handleSelectedFile(cloudProvider: .google, result: res)
                             }
                             ZStack(alignment: .leading) {
@@ -58,7 +58,7 @@ struct UploadView: View {
                                 Text("Upload")
                             }
                             .buttonStyle(DatachestButton())
-                            .fileImporter(isPresented: $vm.showDocumentPickerMicrosoft, allowedContentTypes: [.text, .pdf]) { res in
+                            .fileImporter(isPresented: $vm.showDocumentPickerMicrosoft, allowedContentTypes: [.item]) { res in
                                 vm.handleSelectedFile(cloudProvider: .microsoft, result: res)
                             }
                             ZStack(alignment: .leading) {
@@ -86,7 +86,7 @@ struct UploadView: View {
                                 Text("Upload")
                             }
                             .buttonStyle(DatachestButton())
-                            .fileImporter(isPresented: $vm.showDocumentPickerDropbox, allowedContentTypes: [.text, .pdf]) { res in
+                            .fileImporter(isPresented: $vm.showDocumentPickerDropbox, allowedContentTypes: [.item]) { res in
                                 vm.handleSelectedFile(cloudProvider: .dropbox, result: res)
                             }
                             ZStack(alignment: .leading) {

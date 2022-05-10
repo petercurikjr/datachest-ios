@@ -78,9 +78,9 @@ class DropboxService {
         }
     }
     
-    func downloadFile(downloadArg: String, completion: @escaping (DownloadResponse) -> Void) {
+    func downloadFile(downloadArg: String, ongoingDownloadId: Int?, completion: @escaping (DownloadResponse) -> Void) {
         self.getAccessToken { token in
-            NetworkService.shared.download(endpoint: DropboxEndpoints.download(accessToken: token, downloadArg: downloadArg)) { response in
+            NetworkService.shared.download(endpoint: DropboxEndpoints.download(accessToken: token, downloadArg: downloadArg), ongoingDownloadId: ongoingDownloadId) { response in
                 completion(response)
             }
         }

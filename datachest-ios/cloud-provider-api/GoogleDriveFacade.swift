@@ -29,11 +29,10 @@ class GoogleDriveFacade {
     func uploadFile(fileUrl: URL) {
         let _ = GoogleDriveFileUploadSession(fileUrl: fileUrl) { closureGd in
             closureGd.createNewUploadSession(destinationFolder: .files, fileName: nil) { _ in
-                let ongoingUpload = DatachestOngoingUpload(
+                let ongoingUpload = DatachestOngoingFileTransfer(
                     id: ApplicationStore.shared.uistate.ongoingUploads.count,
                     owner: DatachestSupportedClouds.google,
-                    fileName: closureGd.fileName,
-                    total: ByteCountFormatter.string(fromByteCount: closureGd.fileSize ?? 0, countStyle: .binary)
+                    fileName: closureGd.fileName
                 )
                 DispatchQueue.main.async {
                     ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
@@ -42,6 +41,20 @@ class GoogleDriveFacade {
                 closureGd.uploadFile()
             }
         }
+    }
+    
+    func downloadFile(file: GoogleDriveFileResponse) {
+        let gd = GoogleDriveFileDownloadSession(fileId: file.id, fileName: file.name)
+        let ongoingDownload = DatachestOngoingFileTransfer(
+            id: ApplicationStore.shared.uistate.ongoingDownloads.count,
+            owner: DatachestSupportedClouds.google,
+            fileName: file.name
+        )
+        DispatchQueue.main.async {
+            ApplicationStore.shared.uistate.ongoingDownloads.append(ongoingDownload)
+        }
+        gd.ongoingDownload = ongoingDownload
+        gd.downloadFile()
     }
     
     func listFilesOnCloud(completion: @escaping ([GoogleDriveFileResponse]) -> Void) {

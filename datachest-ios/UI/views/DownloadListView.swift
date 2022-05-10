@@ -1,25 +1,25 @@
 //
-//  UploadListView.swift
+//  DownloadListView.swift
 //  datachest-ios
 //
-//  Created by Peter Čuřík Jr. on 04/05/2022.
+//  Created by Peter Čuřík Jr. on 10/05/2022.
 //
 
 import SwiftUI
 
-struct UploadListView: View {
+struct DownloadListView: View {
     @EnvironmentObject private var state: ApplicationStore
     
     var body: some View {
         VStack {
-            if !self.state.uistate.ongoingUploads.contains(where: {$0.finished == false}) {
-                Text("No ongoing uploads.")
+            if !self.state.uistate.ongoingDownloads.contains(where: {$0.finished == false}) {
+                Text("No ongoing downloads.")
             }
             else {
                 List {
-                    ForEach(self.state.uistate.ongoingUploads.filter({$0.finished == false})) { upload in
+                    ForEach(self.state.uistate.ongoingDownloads.filter({$0.finished == false})) { download in
                         HStack {
-                            switch upload.owner {
+                            switch download.owner {
                             case .google:
                                 VStack {
                                     Image("google-drive")
@@ -45,9 +45,9 @@ struct UploadListView: View {
                                         .padding(.horizontal)
                                 }.frame(width: 68, height: 50, alignment: .center)
                             }
-                            Text(upload.fileName)
+                            Text(download.fileName)
                             Spacer()
-                            Text("\(upload.percentageDone)%")
+                            Text("\(download.percentageDone)%")
                         }
                     }
                 }
@@ -56,8 +56,8 @@ struct UploadListView: View {
     }
 }
 
-struct UploadListView_Previews: PreviewProvider {
+struct DownloadListView_Previews: PreviewProvider {
     static var previews: some View {
-        UploadListView()
+        DownloadListView()
     }
 }

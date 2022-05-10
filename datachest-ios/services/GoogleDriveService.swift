@@ -92,9 +92,9 @@ class GoogleDriveService {
         }
     }
     
-    func downloadFile(fileId: String, completion: @escaping (DownloadResponse) -> Void) {
+    func downloadFile(fileId: String, ongoingDownloadId: Int?, completion: @escaping (DownloadResponse) -> Void) {
         self.getAccessToken { token in
-            NetworkService.shared.download(endpoint: GoogleDriveEndpoints.download(accessToken: token, fileId: fileId)) { response in
+            NetworkService.shared.download(endpoint: GoogleDriveEndpoints.download(accessToken: token, fileId: fileId), ongoingDownloadId: ongoingDownloadId) { response in
                 completion(response)
             }
         }

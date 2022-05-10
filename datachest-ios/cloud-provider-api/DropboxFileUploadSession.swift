@@ -10,7 +10,7 @@ import Foundation
 
 class DropboxFileUploadSession: FileUploadSession {
     var bytesTransferred: Int64 = 0
-    var ongoingUpload: DatachestOngoingUpload?
+    var ongoingUpload: DatachestOngoingFileTransfer?
     var uiUpdateCounter = 0
     var finishUpload = false
     
@@ -21,11 +21,10 @@ class DropboxFileUploadSession: FileUploadSession {
             if let dictionary = jsonRawObject as? [String: Any] {
                 if let sid = dictionary["session_id"] as? String {
                     self.sessionId = sid
-                    let ongoingUpload = DatachestOngoingUpload(
+                    let ongoingUpload = DatachestOngoingFileTransfer(
                         id: ApplicationStore.shared.uistate.ongoingUploads.count,
                         owner: .dropbox,
-                        fileName: self.fileName,
-                        total: ByteCountFormatter.string(fromByteCount: self.fileSize ?? 0, countStyle: .binary)
+                        fileName: self.fileName
                     )
                     DispatchQueue.main.async {
                         ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
@@ -60,7 +59,9 @@ class DropboxFileUploadSession: FileUploadSession {
                                 self.bytesTransferred += Int64(readStreamBytes)
                                 if let u = self.ongoingUpload, self.uiUpdateCounter % 5 == 0 {
                                     DispatchQueue.main.async {
-                                        ApplicationStore.shared.uistate.ongoingUploads[u.id].uploaded = ByteCountFormatter.string(fromByteCount: self.bytesTransferred, countStyle: .binary)
+                                        if let fileSize = self.fileSize {
+                                            ApplicationStore.shared.uistate.ongoingUploads[u.id].percentageDone = Int((Double(self.bytesTransferred) / Double(fileSize)) * 100)
+                                        }
                                     }
                                 }
                                 self.uploadFile()
