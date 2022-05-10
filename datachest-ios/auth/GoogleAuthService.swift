@@ -46,15 +46,31 @@ class GoogleAuthService {
         }
     }
     
-    func signInGoogleSilently() {
+    func signInGoogleSilently(completion: @escaping () -> ()) {
         if GIDSignIn.sharedInstance.hasPreviousSignIn() {
             GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                 print("GOOGLE signed in.", (user?.authentication.accessToken)!, (user?.grantedScopes)!)
                 self.handleUser(user)
+                completion()
             }
         }
         else {
             ApplicationStore.shared.uistate.signedInGoogle = false
         }
+    }
+    
+    func isTokenValid() -> Bool {
+        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "google"),
+           let object = try? JSONDecoder().decode(DatachestGoogleAuthKeychainItem.self, from: keychainItem) {
+            let dateNow = Date()
+            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
+            print("googletoken", diffMinutes)
+            if diffMinutes < 3 {
+                return false
+            }
+            return true
+        }
+        
+        return false
     }
 }

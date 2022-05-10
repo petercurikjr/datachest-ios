@@ -68,7 +68,7 @@ struct LoginView: View {
                 Spacer()
                 Spacer()
             }.padding(30).navigationTitle("Sign in")
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

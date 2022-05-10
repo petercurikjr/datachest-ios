@@ -11,7 +11,7 @@ class DropboxService {
     static let shared = DropboxService()
     private init() {}
     
-    func getAccessToken(completion: @escaping (String) -> Void) {
+    private func getAccessToken(completion: @escaping (String) -> Void) {
         if !DropboxAuthService.shared.isTokenValid() {
             DropboxAuthService.shared.signInDropboxSilently {
                 completion(ApplicationStore.shared.state.dropboxAccessToken)

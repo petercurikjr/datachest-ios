@@ -70,9 +70,10 @@ class DropboxAuthService {
             if diffMinutes < 3 {
                 return false
             }
+            return true
         }
         
-        return true
+        return false
     }
 }
 

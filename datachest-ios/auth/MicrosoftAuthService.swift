@@ -75,7 +75,7 @@ class MicrosoftAuthService {
         }
     }
     
-    func signInMicrosoftSilently() {
+    func signInMicrosoftSilently(completion: @escaping () -> ()) {
         if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
            let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
             guard let account = try? application?.account(forIdentifier: object.accountId) else {
@@ -85,10 +85,26 @@ class MicrosoftAuthService {
             let silentParameters = MSALSilentTokenParameters(scopes: ["User.Read", "Files.ReadWrite"], account: account)
             application?.acquireTokenSilent(with: silentParameters) { result, error in
                 self.handleUser(result)
+                completion()
             }
         }
         else {
             ApplicationStore.shared.uistate.signedInMicrosoft = false
         }
+    }
+    
+    func isTokenValid() -> Bool {
+        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
+           let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
+            let dateNow = Date()
+            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
+            print("mictoken", diffMinutes)
+            if diffMinutes < 3 {
+                return false
+            }
+            return true
+        }
+        
+        return false
     }
 }

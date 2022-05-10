@@ -27,7 +27,9 @@ class DropboxFileUploadSession: FileUploadSession {
                         fileName: self.fileName,
                         total: ByteCountFormatter.string(fromByteCount: self.fileSize ?? 0, countStyle: .binary)
                     )
-                    ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
+                    DispatchQueue.main.async {
+                        ApplicationStore.shared.uistate.ongoingUploads.append(ongoingUpload)
+                    }
                     self.ongoingUpload = ongoingUpload
                     self.uploadFile()
                 }

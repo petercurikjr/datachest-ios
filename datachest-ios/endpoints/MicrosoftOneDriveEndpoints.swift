@@ -8,37 +8,33 @@
 import Foundation
 
 enum MicrosoftOneDriveEndpoints: Endpoint {
-    case getDriveInfo
-    case createUploadSession(fileName: String)
-    case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
-    case uploadKeyShareFile(fileName: String)
-    case download(fileId: String)
-    case listFiles
-    case createFolder(parentFolder: DatachestFolders?)
+    case getDriveInfo(accessToken: String)
+    case createUploadSession(accessToken: String, fileName: String)
+    case uploadFileInChunks(accessToken: String, resumableURL: String, chunkSize: Int, bytes: String)
+    case uploadKeyShareFile(accessToken: String, fileName: String)
+    case download(accessToken: String, fileId: String)
+    case listFiles(accessToken: String)
+    case createFolder(accessToken: String, parentFolder: DatachestFolders?)
     //
     private var baseURLString: String {
         return "https://graph.microsoft.com/v1.0/me/drive"
-    }
-    
-    private var authorization: String {
-        return "Bearer " + self.getAccessToken()
     }
     //
     var url: String {
         switch self {
         case .getDriveInfo:
             return baseURLString
-        case .createUploadSession(let fileName):
+        case .createUploadSession(_, let fileName):
             return baseURLString + "/items/root:\(DatachestFolders.files.full)/\(fileName):/createUploadSession"
-        case .uploadFileInChunks(let resumableURL, _, _):
+        case .uploadFileInChunks(_, let resumableURL, _, _):
             return resumableURL
-        case .uploadKeyShareFile(let fileName):
+        case .uploadKeyShareFile(_, let fileName):
             return baseURLString + "/items/root:\(DatachestFolders.keyshareAndMetadata.full)/\(fileName):/content"
-        case .download(let fileId):
+        case .download(_, let fileId):
             return baseURLString + "/items/\(fileId)/content"
         case .listFiles:
             return baseURLString + "/root:\(DatachestFolders.files.full):/children"
-        case .createFolder(let parentFolder):
+        case .createFolder(_, let parentFolder):
             let pathArg = "/root" + (parentFolder == nil ? "" : ":/") + (parentFolder?.rawValue ?? "") + (parentFolder == nil ? "" : ":")
             return baseURLString + pathArg + "/children"
         }
@@ -65,40 +61,26 @@ enum MicrosoftOneDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case .getDriveInfo:
-            return ["Authorization": authorization]
-        case .createUploadSession:
-            return ["Authorization": authorization,
+        case .getDriveInfo(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .createUploadSession(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
-        case .uploadFileInChunks(_, let chunkSize, let bytes):
-            return ["Authorization": authorization,
+        case .uploadFileInChunks(let accessToken, _, let chunkSize, let bytes):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)"]
-        case .uploadKeyShareFile:
-            return ["Authorization": authorization,
+        case .uploadKeyShareFile(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
-        case .download:
-            return ["Authorization": authorization]
-        case .listFiles:
-            return ["Authorization": authorization]
-        case .createFolder:
-            return ["Authorization": authorization,
+        case .download(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .listFiles(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .createFolder(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
         }
-    }
-    
-    private func getAccessToken() -> String {
-        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "microsoft"),
-           let object = try? JSONDecoder().decode(DatachestMicrosoftAuthKeychainItem.self, from: keychainItem) {
-            let dateNow = Date()
-            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
-            print("mictoken", diffMinutes)
-            if diffMinutes < 3 {
-                MicrosoftAuthService.shared.signInMicrosoftSilently()
-            }
-        }
-        
-        return ApplicationStore.shared.state.microsoftAccessToken
     }
 }
 

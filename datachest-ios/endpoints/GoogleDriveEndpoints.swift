@@ -8,14 +8,14 @@
 import Foundation
 
 enum GoogleDriveEndpoints: Endpoint {
-    case getAboutData
-    case uploadKeyShareFile(resumableURL: String, fileSize: Int)
-    case uploadFileInChunks(resumableURL: String, chunkSize: Int, bytes: String)
-    case getResumableUploadURL
-    case download(fileId: String)
-    case listFiles(q: GoogleDriveQuery)
-    case createFolder
-    case getFileSize(fileId: String)
+    case getAboutData(accessToken: String)
+    case uploadKeyShareFile(accessToken: String, resumableURL: String, fileSize: Int)
+    case uploadFileInChunks(accessToken: String, resumableURL: String, chunkSize: Int, bytes: String)
+    case getResumableUploadURL(accessToken: String)
+    case download(accessToken: String, fileId: String)
+    case listFiles(accessToken: String, q: GoogleDriveQuery)
+    case createFolder(accessToken: String)
+    case getFileSize(accessToken: String, fileId: String)
     //
     private var baseURLString: String {
         return "https://www.googleapis.com"
@@ -23,28 +23,24 @@ enum GoogleDriveEndpoints: Endpoint {
     private var filesURLString: String {
         return "/drive/v3/files"
     }
-    
-    private var authorization: String {
-        return "Bearer " + self.getAccessToken()
-    }
     //
     var url: String {
         switch self {
         case .getAboutData:
             return baseURLString + "/drive/v2/about"
-        case .uploadKeyShareFile(let resumableURL, _):
+        case .uploadKeyShareFile(_, let resumableURL, _):
             return resumableURL
         case .getResumableUploadURL:
             return baseURLString + "/upload/drive/v3/files?uploadType=resumable"
-        case .uploadFileInChunks(let resumableURL, _, _):
+        case .uploadFileInChunks(_, let resumableURL, _, _):
             return resumableURL
-        case .download(let fileId):
+        case .download(_, let fileId):
             return baseURLString + filesURLString + "/\(fileId)?alt=media"
-        case .listFiles(let q):
+        case .listFiles(_, let q):
             return baseURLString + filesURLString + q.query
         case .createFolder:
             return baseURLString + filesURLString
-        case .getFileSize(let fileId):
+        case .getFileSize(_, let fileId):
             return baseURLString + filesURLString + "/\(fileId)?fields=size"
         }
     }
@@ -72,41 +68,27 @@ enum GoogleDriveEndpoints: Endpoint {
 
     var headers: [String: String] {
         switch self {
-        case .getAboutData:
-            return ["Authorization": authorization]
-        case .uploadKeyShareFile(_, let fileSize):
-            return ["Authorization": authorization,
+        case .getAboutData(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .uploadKeyShareFile(let accessToken, _, let fileSize):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Length": "\(fileSize)"]
-        case .getResumableUploadURL:
-            return ["Authorization": authorization,
+        case .getResumableUploadURL(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
-        case .uploadFileInChunks(_, let chunkSize, let bytes):
+        case .uploadFileInChunks(let accessToken, _, let chunkSize, let bytes):
             return ["Content-Length": "\(chunkSize)",
                     "Content-Range": "bytes \(bytes)",
-                    "Authorization": authorization]
-        case .download:
-            return ["Authorization": authorization]
-        case .listFiles:
-            return ["Authorization": authorization]
-        case .createFolder:
-            return ["Authorization": authorization,
+                    "Authorization": "Bearer \(accessToken)"]
+        case .download(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .listFiles(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)"]
+        case .createFolder(let accessToken):
+            return ["Authorization": "Bearer \(accessToken)",
                     "Content-Type": "application/json"]
-        case .getFileSize:
-            return ["Authorization": authorization]
+        case .getFileSize(let accessToken, _):
+            return ["Authorization": "Bearer \(accessToken)"]
         }
-    }
-    
-    private func getAccessToken() -> String {
-        if let keychainItem = KeychainHelper.shared.loadFromKeychain(service: "datachest-auth-keychain-item", account: "google"),
-           let object = try? JSONDecoder().decode(DatachestGoogleAuthKeychainItem.self, from: keychainItem) {
-            let dateNow = Date()
-            let diffMinutes = (Int(object.accessTokenExpirationDate.timeIntervalSince1970 - dateNow.timeIntervalSince1970)) / 60
-            print("googletoken", diffMinutes)
-            if diffMinutes < 3 {
-                GoogleAuthService.shared.signInGoogleSilently()
-            }
-        }
-        
-        return ApplicationStore.shared.state.googleAccessToken
     }
 }
