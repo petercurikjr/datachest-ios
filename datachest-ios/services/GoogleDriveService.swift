@@ -17,7 +17,7 @@ class GoogleDriveService {
                 completion(ApplicationStore.shared.state.googleAccessToken)
             }
         }
-        else {
+        else if ApplicationStore.shared.state.googleAccessToken != "" {
             completion(ApplicationStore.shared.state.googleAccessToken)
         }
     }

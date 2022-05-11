@@ -17,7 +17,7 @@ class DropboxService {
                 completion(ApplicationStore.shared.state.dropboxAccessToken)
             }
         }
-        else {
+        else if ApplicationStore.shared.state.dropboxAccessToken != "" {
             completion(ApplicationStore.shared.state.dropboxAccessToken)
         }
     }

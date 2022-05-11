@@ -56,6 +56,7 @@ class MicrosoftAuthService {
             }
             
             ApplicationStore.shared.uistate.signedInMicrosoft = false
+            ApplicationStore.shared.state.microsoftAccessToken = ""
             UserDefaults.standard.setValue(true, forKey: "signed-out-microsoft")
             print("MICROSOFT signed out.")
         }

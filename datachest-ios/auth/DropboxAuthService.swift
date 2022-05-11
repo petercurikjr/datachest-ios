@@ -57,6 +57,7 @@ class DropboxAuthService {
     func signOutDropbox() {
         print("DROPBOX signed out.")
         ApplicationStore.shared.uistate.signedInDropbox = false
+        ApplicationStore.shared.state.dropboxAccessToken = ""
         UserDefaults.standard.setValue(true, forKey: "signed-out-dropbox")
         DropboxClientsManager.unlinkClients()
     }

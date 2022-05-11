@@ -28,7 +28,7 @@ final class ApplicationStore: ObservableObject {
     static let shared = ApplicationStore()
     
     var state = ApplicationState(
-        googleDriveFolderIds: [:],
+        googleDriveFolderIds: [DatachestFolders: String](),
         googleAccessToken: "",
         microsoftAccessToken: "",
         dropboxAccessToken: ""

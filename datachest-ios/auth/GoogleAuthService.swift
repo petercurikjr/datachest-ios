@@ -29,7 +29,9 @@ class GoogleAuthService {
     
     func signOutGoogle() {
         GIDSignIn.sharedInstance.signOut()
+        ApplicationStore.shared.state.googleAccessToken = ""
         ApplicationStore.shared.uistate.signedInGoogle = false
+        ApplicationStore.shared.state.googleDriveFolderIds.removeAll()
         UserDefaults.standard.setValue(true, forKey: "signed-out-google")
         print("GOOGLE signed out.")
     }

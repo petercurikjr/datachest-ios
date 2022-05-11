@@ -17,7 +17,7 @@ class MicrosoftOneDriveService {
                 completion(ApplicationStore.shared.state.microsoftAccessToken)
             }
         }
-        else {
+        else if ApplicationStore.shared.state.microsoftAccessToken != "" {
             completion(ApplicationStore.shared.state.microsoftAccessToken)
         }
     }
