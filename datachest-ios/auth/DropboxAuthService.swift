@@ -51,6 +51,7 @@ class DropboxAuthService {
         }
         else {
             ApplicationStore.shared.uistate.signedInDropbox = false
+            UserDefaults.standard.setValue(true, forKey: "signed-out-dropbox")
         }
     }
     

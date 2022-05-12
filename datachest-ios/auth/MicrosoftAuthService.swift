@@ -91,6 +91,7 @@ class MicrosoftAuthService {
         }
         else {
             ApplicationStore.shared.uistate.signedInMicrosoft = false
+            UserDefaults.standard.setValue(true, forKey: "signed-out-microsoft")
         }
     }
     

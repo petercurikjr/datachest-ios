@@ -58,6 +58,7 @@ class GoogleAuthService {
         }
         else {
             ApplicationStore.shared.uistate.signedInGoogle = false
+            UserDefaults.standard.setValue(true, forKey: "signed-out-google")
         }
     }
     
